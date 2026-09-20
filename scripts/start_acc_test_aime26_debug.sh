@@ -11,7 +11,7 @@ evalscope eval \
     --api-key EMPTY \
     --eval-type openai_api \
     --generation-config '{
-        "max_tokens": 300,
+        "max_tokens": 2000,
         "seed": 3407,
         "top_p": 1.0,
         "temperature": 1.0,
