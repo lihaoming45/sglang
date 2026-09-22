@@ -1,0 +1,205 @@
+
+root@localhost:/home/l00993641/sglang/scripts# ./start_acc_test_gpqa.sh 
+2026-09-22 19:49:40 - evalscope - INFO: Args: Task config is provided with CommandLine type.
+2026-09-22 19:49:45,061 - torch_npu.env - INFO: get env ASCEND_HOME_PATH = /usr/local/Ascend/cann-9.1.0
+2026-09-22 19:49:45 - evalscope - INFO: Running with native backend
+2026-09-22 19:49:45 - evalscope - INFO: Dump task config to ./outputs/20260922_194945/configs/task_config.yaml
+2026-09-22 19:49:45 - evalscope - INFO: {
+    "model_id": "DeepSeek-V4-Flash-0731-w8a8",
+    "model_args": {},
+    "model_task": "text_generation",
+    "chat_template": null,
+    "datasets": [
+        "gpqa_diamond"
+    ],
+    "dataset_args": {
+        "gpqa_diamond": {
+            "local_path": "/home/datasets/gpqa_diamond"
+        }
+    },
+    "dataset_dir": "/root/.cache/modelscope/hub/datasets",
+    "dataset_hub": "local",
+    "repeats": 1,
+    "eval_type": "openai_api",
+    "eval_backend": "Native",
+    "eval_config": null,
+    "limit": null,
+    "eval_batch_size": 8,
+    "use_cache": null,
+    "rerun_review": false,
+    "work_dir": "./outputs/20260922_194945",
+    "no_timestamp": false,
+    "enable_progress_tracker": false,
+    "ignore_errors": true,
+    "debug": false,
+    "seed": 42,
+    "api_url": "http://127.0.0.1:30100/v1",
+    "api_key": "**********",
+    "timeout": null,
+    "stream": null,
+    "judge": {
+        "strategy": "auto",
+        "models": [],
+        "contract": {
+            "system_prompt": null,
+            "prompt_template": null,
+            "score_mapping": null,
+            "score_type": "pattern"
+        },
+        "repeats": 1,
+        "position_swap": "auto",
+        "aggregation": "mean",
+        "min_valid_judges": 1
+    },
+    "analysis_report": false,
+    "collect_perf": true,
+    "use_sandbox": false,
+    "sandbox_type": "docker",
+    "sandbox_manager_config": {},
+    "evalscope_version": "1.12.0",
+    "model": "/home/weights/DeepSeek-V4-Flash-0731-w8a8",
+    "generation_config": {
+        "timeout": 6000.0,
+        "batch_size": 8,
+        "stream": false,
+        "max_tokens": 125000,
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "seed": 3407,
+        "n": 1,
+        "extra_body": {
+            "chat_template_kwargs": {
+                "thinking": true
+            }
+        }
+    },
+    "sandbox": {
+        "enabled": false,
+        "engine": "docker",
+        "default_config": {},
+        "manager_config": {},
+        "pool_size": null
+    },
+    "agent_config": null
+}
+2026-09-22 19:49:45 - evalscope - INFO: Start loading benchmark dataset: gpqa_diamond                                                                                                                                                                    
+2026-09-22 19:49:45 - evalscope - INFO: Loading dataset /home/datasets/gpqa_diamond from local > subset: default > split: train ...                                                                                                                      
+Running[eval]:   0%|                                                                                                                                                                                                        | 0/1 [00:00<?, ?benchmark/s]2026-09-22 19:49:45,654 - torch_npu.env - INFO: get env MODELSCOPE_LOG_LEVEL = 40
+Processing records: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 198/198 [00:00<00:00, 46405.46it/s]
+2026-09-22 19:49:45 - evalscope - INFO: gpqa_diamond: 198 samples to evaluate (1 subset)                                                                                                                                                                 
+2026-09-22 19:49:45 - evalscope - INFO: Subsets of gpqa_diamond: ['default']                                                                                                                                                                             
+2026-09-22 19:49:45 - evalscope - INFO: Loading model for prediction...                                                                                                                                                                                  
+2026-09-22 19:49:45 - evalscope - INFO: Creating model /home/weights/DeepSeek-V4-Flash-0731-w8a8 with eval_type=openai_api base_url=http://127.0.0.1:30100/v1, config={'timeout': 6000.0, 'retries': 5, 'retry_interval': 10, 'batch_size': 8, 'stream': False, 'max_tokens': 125000, 'top_p': 1.0, 'temperature': 1.0, 'seed': 3407, 'n': 1, 'anthropic_cache_strategy': 'evaluation', 'extra_body': {'chat_template_kwargs': {'thinking': True}}}, model_args={}                                                 
+2026-09-22 19:49:45 - evalscope - INFO: Model loaded successfully.                                                                                                                                                                                       
+Running[eval]:   0%|                                                                                                                                                                                                        | 0/1 [00:00<?, ?benchmark/s]2026-09-22 19:49:46,322 - torch_npu.env - INFO: get env PATH = /usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1/bin:/usr/local/Ascend/cann-9.1.0/tools/bishengir/bin:/usr/local/Ascend/cann-9.1.0/bin:/usr/local/Ascend/cann-9.1.0/tools/ccec_compiler/bin:/usr/local/Ascend/cann-9.1.0/tools/profiler/bin:/usr/local/Ascend/cann-9.1.0/tools/ascend_system_advisor/asys:/usr/local/Ascend/cann-9.1.0/tools/show_kernel_debug_data:/usr/local/Ascend/cann-9.1.0/tools/msobjdump:/usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1/bin:/usr/local/Ascend/ascend-toolkit/latest/bin:/usr/local/Ascend/ascend-toolkit/latest/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/tools/ccec_compiler/bin:/usr/local/python3.12.13/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+2026-09-22 19:50:45 - evalscope - INFO: Evaluating[gpqa_diamond]   8%| 15/198 [Elapsed: 01:00 < Remaining: 20:11,  6.62s/it]                                                                                                                             
+2026-09-22 19:51:45 - evalscope - INFO: Evaluating[gpqa_diamond]  11%| 21/198 [Elapsed: 02:00 < Remaining: 33:05, 11.22s/it]                                                                                                                             
+2026-09-22 19:52:45 - evalscope - INFO: Evaluating[gpqa_diamond]  11%| 22/198 [Elapsed: 03:00 < Remaining: 41:56, 14.30s/it]                                                                                                                             
+2026-09-22 19:53:45 - evalscope - INFO: Evaluating[gpqa_diamond]  12%| 23/198 [Elapsed: 04:00 < Remaining: 1:37:12, 33.33s/it]                                                                                                                           
+2026-09-22 19:54:46 - evalscope - INFO: Evaluating[gpqa_diamond]  12%| 24/198 [Elapsed: 05:00 < Remaining: 1:43:10, 35.57s/it]                                                                                                                           
+2026-09-22 19:55:46 - evalscope - INFO: Evaluating[gpqa_diamond]  14%| 28/198 [Elapsed: 06:00 < Remaining: 1:12:20, 25.53s/it]                                                                                                                           
+2026-09-22 19:56:46 - evalscope - INFO: Evaluating[gpqa_diamond]  15%| 30/198 [Elapsed: 07:00 < Remaining: 1:03:22, 22.63s/it]                                                                                                                           
+2026-09-22 19:57:46 - evalscope - INFO: Evaluating[gpqa_diamond]  18%| 36/198 [Elapsed: 08:00 < Remaining: 28:22, 10.51s/it]                                                                                                                             
+2026-09-22 19:58:46 - evalscope - INFO: Evaluating[gpqa_diamond]  23%| 45/198 [Elapsed: 09:00 < Remaining: 14:23,  5.64s/it]                                                                                                                             
+2026-09-22 19:59:46 - evalscope - INFO: Evaluating[gpqa_diamond]  26%| 51/198 [Elapsed: 10:00 < Remaining: 21:22,  8.73s/it]                                                                                                                             
+2026-09-22 20:00:46 - evalscope - INFO: Evaluating[gpqa_diamond]  28%| 56/198 [Elapsed: 11:00 < Remaining: 12:06,  5.12s/it]                                                                                                                             
+2026-09-22 20:01:46 - evalscope - INFO: Evaluating[gpqa_diamond]  30%| 59/198 [Elapsed: 12:00 < Remaining: 41:53, 18.08s/it]                                                                                                                             
+2026-09-22 20:02:46 - evalscope - INFO: Evaluating[gpqa_diamond]  32%| 63/198 [Elapsed: 13:00 < Remaining: 41:51, 18.60s/it]                                                                                                                             
+2026-09-22 20:03:46 - evalscope - INFO: Evaluating[gpqa_diamond]  32%| 64/198 [Elapsed: 14:00 < Remaining: 33:46, 15.12s/it]                                                                                                                             
+2026-09-22 20:04:46 - evalscope - INFO: Evaluating[gpqa_diamond]  32%| 64/198 [Elapsed: 15:00 < Remaining: 33:46, 15.12s/it]                                                                                                                             
+2026-09-22 20:05:46 - evalscope - INFO: Evaluating[gpqa_diamond]  32%| 64/198 [Elapsed: 16:00 < Remaining: 33:46, 15.12s/it]                                                                                                                             
+2026-09-22 20:06:46 - evalscope - INFO: Evaluating[gpqa_diamond]  32%| 64/198 [Elapsed: 17:00 < Remaining: 33:46, 15.12s/it]                                                                                                                             
+2026-09-22 20:07:46 - evalscope - INFO: Evaluating[gpqa_diamond]  33%| 65/198 [Elapsed: 18:00 < Remaining: 3:39:41, 99.11s/it]                                                                                                                           
+2026-09-22 20:08:46 - evalscope - INFO: Evaluating[gpqa_diamond]  34%| 68/198 [Elapsed: 19:00 < Remaining: 1:26:36, 39.98s/it]                                                                                                                           
+2026-09-22 20:09:46 - evalscope - INFO: Evaluating[gpqa_diamond]  35%| 70/198 [Elapsed: 20:00 < Remaining: 1:32:25, 43.32s/it]                                                                                                                           
+2026-09-22 20:10:46 - evalscope - INFO: Evaluating[gpqa_diamond]  36%| 71/198 [Elapsed: 21:00 < Remaining: 1:08:38, 32.43s/it]                                                                                                                           
+2026-09-22 20:11:46 - evalscope - INFO: Evaluating[gpqa_diamond]  36%| 71/198 [Elapsed: 22:00 < Remaining: 1:08:38, 32.43s/it]                                                                                                                           
+2026-09-22 20:12:46 - evalscope - INFO: Evaluating[gpqa_diamond]  36%| 72/198 [Elapsed: 23:00 < Remaining: 2:07:41, 60.81s/it]                                                                                                                           
+2026-09-22 20:13:46 - evalscope - INFO: Evaluating[gpqa_diamond]  36%| 72/198 [Elapsed: 24:00 < Remaining: 2:07:41, 60.81s/it]                                                                                                                           
+2026-09-22 20:14:46 - evalscope - INFO: Evaluating[gpqa_diamond]  37%| 74/198 [Elapsed: 25:00 < Remaining: 2:06:49, 61.36s/it]                                                                                                                           
+2026-09-22 20:15:46 - evalscope - INFO: Evaluating[gpqa_diamond]  37%| 74/198 [Elapsed: 26:00 < Remaining: 2:06:49, 61.36s/it]                                                                                                                           
+2026-09-22 20:16:46 - evalscope - INFO: Evaluating[gpqa_diamond]  39%| 78/198 [Elapsed: 27:00 < Remaining: 1:11:36, 35.80s/it]                                                                                                                           
+Running[eval]:   0%|                                                                                                                                                                                                        | 0/1 [27:00<?, ?benchmark/s]2026-09-22 20:17:24,898 - openai._base_client - INFO: Retrying request to /chat/completions in 0.420072 seconds                                                                                                        | 78/198 [27:00<1:11:36, 35.80s/it]
+2026-09-22 20:17:24,899 - openai._base_client - INFO: Retrying request to /chat/completions in 0.496874 seconds
+2026-09-22 20:17:24,899 - openai._base_client - INFO: Retrying request to /chat/completions in 0.465621 seconds
+2026-09-22 20:17:24,899 - openai._base_client - INFO: Retrying request to /chat/completions in 0.472099 seconds
+2026-09-22 20:17:24,900 - openai._base_client - INFO: Retrying request to /chat/completions in 0.407941 seconds
+2026-09-22 20:17:24,900 - openai._base_client - INFO: Retrying request to /chat/completions in 0.415413 seconds
+2026-09-22 20:17:24,900 - openai._base_client - INFO: Retrying request to /chat/completions in 0.388478 seconds
+2026-09-22 20:17:24,900 - openai._base_client - INFO: Retrying request to /chat/completions in 0.489133 seconds
+2026-09-22 20:17:25,290 - openai._base_client - INFO: Retrying request to /chat/completions in 0.894520 seconds
+2026-09-22 20:17:25,309 - openai._base_client - INFO: Retrying request to /chat/completions in 0.992551 seconds
+2026-09-22 20:17:25,316 - openai._base_client - INFO: Retrying request to /chat/completions in 0.945341 seconds
+2026-09-22 20:17:25,320 - openai._base_client - INFO: Retrying request to /chat/completions in 0.873661 seconds
+2026-09-22 20:17:25,367 - openai._base_client - INFO: Retrying request to /chat/completions in 0.993366 seconds
+2026-09-22 20:17:25,373 - openai._base_client - INFO: Retrying request to /chat/completions in 0.950291 seconds
+2026-09-22 20:17:25,391 - openai._base_client - INFO: Retrying request to /chat/completions in 0.837529 seconds
+2026-09-22 20:17:25,398 - openai._base_client - INFO: Retrying request to /chat/completions in 0.863765 seconds
+2026-09-22 20:17:26 - evalscope - WARNING: Attempt 1 / 5 failed: Connection error.. Retrying...                                                                                                                                                          
+2026-09-22 20:17:26 - evalscope - WARNING: Attempt 1 / 5 failed: Connection error.. Retrying...                                                                                                                                                          
+2026-09-22 20:17:26 - evalscope - WARNING: Attempt 1 / 5 failed: Connection error.. Retrying...                                                                                                                                                          
+2026-09-22 20:17:26 - evalscope - WARNING: Attempt 1 / 5 failed: Connection error.. Retrying...                                                                                                                                                          
+2026-09-22 20:17:26 - evalscope - WARNING: Attempt 1 / 5 failed: Connection error.. Retrying...                                                                                                                                                          
+2026-09-22 20:17:26 - evalscope - WARNING: Attempt 1 / 5 failed: Connection error.. Retrying...                                                                                                                                                          
+2026-09-22 20:17:26 - evalscope - WARNING: Attempt 1 / 5 failed: Connection error.. Retrying...                                                                                                                                                          
+2026-09-22 20:17:26 - evalscope - WARNING: Attempt 1 / 5 failed: Connection error.. Retrying...           
+
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/python3.12.13/bin/evalscope", line 6, in <module>
+    sys.exit(run_cmd())
+             ^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/evalscope/cli/cli.py", line 31, in run_cmd
+    cmd.execute()
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/evalscope/cli/start_eval.py", line 28, in execute
+    run_task(self.args)
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/evalscope/run.py", line 33, in run_task
+    return run_single_task(task_cfg)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/evalscope/run.py", line 48, in run_single_task
+    result = evaluate_model(task_cfg, outputs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/evalscope/run.py", line 213, in evaluate_model
+    res_dict = evaluator.eval()
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/evalscope/evaluator/evaluator.py", line 210, in eval
+    results_by_subset = self._run_pool(context)
+                        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/evalscope/evaluator/evaluator.py", line 348, in _run_pool
+    run_in_threads_with_progress(
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/evalscope/utils/function_utils.py", line 215, in run_in_threads_with_progress
+    with ThreadPoolExecutor(max_workers=effective_max_workers) as executor:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/concurrent/futures/_base.py", line 647, in __exit__
+    self.shutdown(wait=True)
+  File "/usr/local/python3.12.13/lib/python3.12/concurrent/futures/thread.py", line 239, in shutdown
+    t.join()
+  File "/usr/local/python3.12.13/lib/python3.12/threading.py", line 1149, in join
+    self._wait_for_tstate_lock()
+  File "/usr/local/python3.12.13/lib/python3.12/threading.py", line 1169, in _wait_for_tstate_lock
+    if lock.acquire(block, timeout):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+^CException ignored in: <module 'threading' from '/usr/local/python3.12.13/lib/python3.12/threading.py'>
+Traceback (most recent call last):
+  File "/usr/local/python3.12.13/lib/python3.12/threading.py", line 1594, in _shutdown
+    atexit_call()
+  File "/usr/local/python3.12.13/lib/python3.12/concurrent/futures/thread.py", line 31, in _python_exit
+    t.join()
+  File "/usr/local/python3.12.13/lib/python3.12/threading.py", line 1149, in join
+    self._wait_for_tstate_lock()
+  File "/usr/local/python3.12.13/lib/python3.12/threading.py", line 1169, in _wait_for_tstate_lock
+    if lock.acquire(block, timeout):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt: 
+Exception ignored in atexit callback: <function shutdown at 0xffff802332e0>
+Traceback (most recent call last):
+  File "/usr/local/python3.12.13/lib/python3.12/logging/__init__.py", line 2265, in shutdown
+    h.close()
+  File "/usr/local/python3.12.13/lib/python3.12/logging/__init__.py", line 1247, in close
+    stream.close()
+KeyboardInterrupt: 
+^Croot@localhost:/home/l00993641/sglang/scripts# 
