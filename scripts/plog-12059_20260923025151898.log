@@ -1,0 +1,110 @@
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:51.751.285 [stars_engine.cc:1557]14407 ProcLogicCqReport:Task run failed, device_id=0, stream_id=38, task_id=986, sqe_type=7(notify wait), errType=0x20(sq sw status error), sqSwStatus=0x104000c0
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:51.756.817 [device_error_core_proc.cc:1020]14407 AddExceptionRegInfo:add error register: core_id=8, stream_id=91, task_id=192
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:51.756.827 [device_error_core_proc.cc:1060]14407 PrintCoreInfo:The error from device(chipId:0, dieId:0), serial number is 1, there is an exception of fftsplus aivector error, core id is 8, error code = 0x800000, dump info: pc start: 0x12c0c13d4180, current: 0x12c0c13d85c8, vec error info: 0x4b04310602, mte error info: 0x61060000b0, ifu error info: 0x5948e33bdb540, ccu error info: 0xb2993cdc3f3dd533, cube error info: 0, biu error info: 0, aic error mask: 0x6500020bd00028c, para base: 0x12c14267a080, aic cond: 0.
+The extend info: errcode:(0x800000, 0, 0) errorStr: MTE accesses an invalid GM address or the cross-device memory access times out. fixp_error0 info: 0x60000b0, fixp_error1 info: 0x61, fsmId:0, tslot:7, thread:0, ctxid:0, blk:25, sublk:0, subErrType:4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.537 [device_error_core_proc.cc:775]14407 CheckSmmuFault:Get isSmmuFault is 1.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.540 [device_error_core_proc.cc:1397]14407 ProcessStarsCoreErrorInfo:devId=0, streamId=91, taskId=192, MTE errorCode=0.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.570 [model_execute_task.cc:544]14407 ReportErrorInfoForModelExecuteTask:model execute error, retCode=0x91, [the model stream execute failed].
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.759 [model_execute_task.cc:509]14407 PrintErrorInfoForModelExecuteTask:stream_id=38, task_id=985, sqVirtualAddr=0, head equal tail flag=0.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.762 [model_execute_task.cc:472]14407 PrintErrorModelExecuteTaskFuncCall:funcCallSvmMem=0x1240013a9000, funCallMemSize=464.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.930 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00000113 000000db 092010db 013a91c0 0000025b 0000125b 00000001 000002db
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.933 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 000012db 00000006 00329073 004177e3 00311193 00308233 00023183 0000025b
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.935 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 1003125b a0004880 000000db 000090db 00000001 0000b073 00322027 0000025b
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.937 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 1003125b a0004880 00023203 000000db 000090db 00000001 0000a073 00020093
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.939 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 7ff0f093 0030c0b3 000002db 000012db 00000000 00329073 226087fb 02025213
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.941 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00f27213 000000db 000010db 00000000 00309073 226207fb 000000db 000010db
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.942 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00000006 00309073 00021763 00319293 0000025b 0960125b 80000000 00520233
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.944 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00023203 000002db 000012db 00000006 00329073 00020263 01023083 01f09093
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.946 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 03f0d093 000002db 000012db 00000005 00329073 000081e3 01023283 03029293
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.947 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 0302d293 00823083 03009093 0300d093 0050c0b3 000002db 000012db 00000006
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.949 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00329073 000094e3 00022a27 0001c22b 00311293 00110113 0000025b 0920125b
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.951 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 013a91c8 005202b3 0002b203 00023283 00128293 00521027 0001d2ab 0000025b
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.953 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 0000125b 00000000 00321073 000000e3 000002db 096012db 80013000 0042a027
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.955 [model_execute_task.cc:489]14407 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00000000 000002db 096012db 80013000 0012a427 00000000 00000000 00000013
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.957 [model_execute_task.cc:517]14407 PrintErrorInfoForModelExecuteTask:model execute task failed, device_id=0, model stream_id=38, model task_id=985, flip_num=0, model_id=47, first_task_id=0
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.963.963 [model_execute_task.cc:560]14407 ReportErrorInfoForModelExecuteTask:Real fault task, device_id=0, sub_model_id=4294967295, stream_id=91, task_id=192, type=66[KERNEL_AIVEC].
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.152 [davinci_kernel_task.cc:1076]14407 GetArgsInfo:[AIC_INFO] args(0 to 19) after execute:0xfee00000000, 0x12c0c1a00000, 0, 0x131ac008ec00, 0x131ac0040400, 0, 0, 0, 0x132c0028c000, 0x131ac0039e00, 0x132c01910000, 0x131ac020f000, 0x131ac0005400, 0x131ac003fa00, 0x132c01be4000, 0x12c14267a108, 0x12c100013000, 0x200000064, 0x24000000040, 0.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.157 [davinci_kernel_task.cc:1076]14407 GetArgsInfo:[AIC_INFO] args(20 to 39) after execute:0, 0, 0xff000000000000, 0, 0, 0x1000000, 0x30000000000, 0x616e5f70756f7267, 0x3130315f656d, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.161 [davinci_kernel_task.cc:1076]14407 GetArgsInfo:[AIC_INFO] args(40 to 59) after execute:0, 0, 0, 0x6c6c416f746c6c41, 0x3a306c6576656c3d, 0x6873656d6c6c7566, 0x3a316c6576656c3b, 0x6573697772696170, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x8.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.164 [davinci_kernel_task.cc:1076]14407 GetArgsInfo:[AIC_INFO] args(60 to 79) after execute:0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.168 [davinci_kernel_task.cc:1076]14407 GetArgsInfo:[AIC_INFO] args(80 to 99) after execute:0, 0, 0, 0, 0, 0, 0, 0, 0, 0x1000000, 0x30000000000, 0, 0, 0, 0, 0, 0, 0, 0, 0.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.171 [davinci_kernel_task.cc:1076]14407 GetArgsInfo:[AIC_INFO] args(100 to 119) after execute:0, 0, 0, 0, 0, 0, 0, 0x65687461476c6c41, 0x306c6576656c3d72, 0x676e69723a, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.174 [davinci_kernel_task.cc:1076]14407 GetArgsInfo:[AIC_INFO] args(120 to 139) after execute:0, 0, 0, 0x6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.177 [davinci_kernel_task.cc:1076]14407 GetArgsInfo:[AIC_INFO] args(140 to 159) after execute:0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x100000010, 0, 0, 0x10000000000, 0x3c000000002, 0x600000018, 0x3000001000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.180 [davinci_kernel_task.cc:1076]14407 GetArgsInfo:[AIC_INFO] args(160 to 172) after execute:0x1000000, 0x2ff00, 0x9c400000, 0x1, 0x8000, 0, 0, 0, 0, 0xa5a5a5a50100be20, 0x9000000080, 0x6b5f6c636362696c, 0x6f732e6c656e7265.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.183 [davinci_kernel_task.cc:1080]14407 GetArgsInfo:tilingKey = 0, print 9 Times totalLen=(173*8), argsSize=1384, schemMode=1, blockDim=48
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.190 [davinci_kernel_task.cc:1180]14407 PrintErrorInfoForDavinciTask:[AIC_INFO] after execute:args print end
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.346 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[0]=0x00000007.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.348 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[1]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.350 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[2]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.352 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[3]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.353 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[4]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.355 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[5]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.357 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[6]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.358 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[7]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.360 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[8]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.361 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[9]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.363 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[10]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.364 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[11]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.366 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[12]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.367 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[13]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.369 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[14]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.370 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[15]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.372 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[16]=0x00000002.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.374 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[17]=0x00000004.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.375 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[18]=0x00010000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.377 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[19]=0x00300030.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.378 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[20]=0x4267a080.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.380 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[21]=0x056812c1.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.382 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[22]=0x4267a080.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.383 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[23]=0x056812c1.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.385 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[24]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.386 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[25]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.388 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[26]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.389 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[27]=0xc13d4180.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.391 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[28]=0x12c012c0.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.392 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[29]=0xc13d4180.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.394 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[30]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.395 [davinci_kernel_task.cc:1040]14407 GetMixCtxInfo:The DavinciTask Mix context-buf[31]=0000000000.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.398 [davinci_kernel_task.cc:1185]14407 PrintErrorInfoForDavinciTask:[AIC_INFO] after execute:mixCtx print end
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.964.796 [davinci_kernel_task.cc:1210]14407 PrintErrorInfoForDavinciTask:[DFX_INFO]AI Core kernel execution failed, device_id=0, stream_id=91, report_stream_id=38, task_id=192, flip_num=0, fault kernel_name=MoeLowLatencyDispatchV2_5c294e3989c708c5e39899f9ef342737_30002, fault kernel info ext=none, program id=117, hash=10806632198436797507.
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.964.840 [exception_dumper.cpp:203][tid:14407] [Dump][Exception] Begin to dump exception. dumpScene=aic_err_brief_dump, deviceId=0, streamId=91, taskId=192, exceptionType=2(aicore), kernelName=MoeLowLatencyDispatchV2_5c294e3989c708c5e39899f9ef342737_30002.
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.278 [kernel_symbol_locator.cpp:583][tid:14407] [Dump][Exception] Error register information. coreId=8, coreType=1, AIC_ERR_0=0x800000 AIC_ERR_1=0x0 AIC_ERR_2=0x0 AIC_ERR_3=0x0 AIC_ERR_4=0x0 AIC_ERR_5=0x0 BIU_ERR_0=0x0 BIU_ERR_1=0x0 CCU_ERR_0=0x3f3dd533 CCU_ERR_1=0xb2993cdc CUBE_ERR_0=0x0 CUBE_ERR_1=0x0 IFU_ERR_0=0x33bdb540 IFU_ERR_1=0x5948e MTE_ERR_0=0x60000b0 MTE_ERR_1=0x61 VEC_ERR_0=0x4310602 VEC_ERR_1=0x4b FIXP_ERR_0=0x60000b0 FIXP_ERR_1=0x61 AIC_COND_0=0x0 AIC_COND_1=0x0 
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.282 [kernel_pc_fixer.cpp:97][tid:14407] [Dump][Exception] Fix PC with module=MTE, originalPC=0x12c0c13d85c8, fixedPC=0x12c0c13d86c0.
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.284 [kernel_symbol_locator.cpp:602][tid:14407] [Dump][Exception] Error PC information. coreId=8, coreType=1, originalStartPC=0x12c0c13d4180, fixedStartPC=0x12c0c13cf000, originalCurrentPC=0x12c0c13d85c8, fixedCurrentPC=0x12c0c13d86c0, fixedPCOffset=0x96c0.
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.286 [kernel_symbol_locator.cpp:608][tid:14407] [Dump][Exception] Error symbol information. coreId=8, coreType=1, symbol=MoeLowLatencyDispatchV2_5c294e3989c708c5e39899f9ef342737_30002_mix_aiv+0x4540.
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.520 [dfx_args_parser.cpp:95][tid:14407] [AIC_INFO] args(0 to 20) after execute:0xfee00000000, 0x12c0c1a00000, 0, 0x131ac008ec00, 0x131ac0040400, 0, 0, 0, 0x132c0028c000, 0x131ac0039e00, 0x132c01910000, 0x131ac020f000, 0x131ac0005400, 0x131ac003fa00, 0x132c01be4000, 0x12c14267a108, 0x12c100013000, 0x200000064, 0x24000000040, 0, 
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.525 [dfx_args_parser.cpp:95][tid:14407] [AIC_INFO] args(20 to 40) after execute:0, 0, 0xff000000000000, 0, 0, 0x1000000, 0x30000000000, 0x616e5f70756f7267, 0x3130315f656d, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.529 [dfx_args_parser.cpp:95][tid:14407] [AIC_INFO] args(40 to 60) after execute:0, 0, 0, 0x6c6c416f746c6c41, 0x3a306c6576656c3d, 0x6873656d6c6c7566, 0x3a316c6576656c3b, 0x6573697772696170, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x8, 
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.532 [dfx_args_parser.cpp:95][tid:14407] [AIC_INFO] args(60 to 80) after execute:0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.535 [dfx_args_parser.cpp:95][tid:14407] [AIC_INFO] args(80 to 100) after execute:0, 0, 0, 0, 0, 0, 0, 0, 0, 0x1000000, 0x30000000000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.539 [dfx_args_parser.cpp:95][tid:14407] [AIC_INFO] args(100 to 120) after execute:0, 0, 0, 0, 0, 0, 0, 0x65687461476c6c41, 0x306c6576656c3d72, 0x676e69723a, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.542 [dfx_args_parser.cpp:95][tid:14407] [AIC_INFO] args(120 to 140) after execute:0, 0, 0, 0x6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.545 [dfx_args_parser.cpp:95][tid:14407] [AIC_INFO] args(140 to 160) after execute:0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x100000010, 0, 0, 0x10000000000, 0x3c000000002, 0x600000018, 0x3000001000, 
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.548 [dfx_args_parser.cpp:95][tid:14407] [AIC_INFO] args(160 to 173) after execute:0x1000000, 0x2ff00, 0x9c400000, 0x1, 0x8000, 0, 0, 0, 0, 0xa5a5a5a50100be20, 0x9000000080, 0x6b5f6c636362696c, 0x6f732e6c656e7265, 
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.550 [dfx_args_parser.cpp:90][tid:14407] [AIC_INFO] after execute:args print end
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.682 [dfx_args_parser.cpp:195][tid:14407] GetShapeData failed, magic is invalid, atomicIndex=0xa5a5a5a50100be20, magicAndSpace=0x1, magic=0x0, magicMask=0xffffffff00000000.
+[ERROR] IDEDD(12059,):2026-09-23-02:51:52.965.685 [dfx_args_parser.cpp:266][tid:14407] Can not find shape info. tiling data addr=0x12c14267a108, size=1224
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.013 [stream.cc:1743]14407 GetError:Stream Synchronize failed, stream_id=38, retCode=0x91, [the model stream execute failed].
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.019 [stream.cc:1746]14407 GetError:[AIC_INFO] after execute:args print end
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.042 [stream.cc:1746]14407 GetError:[AIC_INFO] after execute:mixCtx print end
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.049 [stream.cc:1746]14407 GetError:[DFX_INFO]AI Core kernel execution failed, device_id=0, stream_id=91, report_stream_id=38, task_id=192, flip_num=0, fault kernel_name=MoeLowLatencyDispatchV2_5c294e3989c708c5e39899f9ef342737_30002, fault kernel info ext=none, program id=117, hash=10806632198436797507.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.056 [stream.cc:4183]14407 EnterFailureAbort:stream_id=38 enter failure abort.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.066 [stream.cc:1889]14598 SynchronizeExecutedTask:context is abort, status=0x7150050.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.074 [stream.cc:1944]14598 SynchronizeImpl:failed, stream_id=27, error=0x7150050
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.078 [stars_engine.cc:1447]14407 StarsResumeRtsq:Failed to resume RTSQ. Reason: stop scheduling in abort failure mode, stream_id=38, sq_id=11, sq_head=938, task_id=986, taskType=14.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.079 [api_error.cc:1101]14598 StreamSynchronize:Stream synchronize failed, stream_id=27, timeout=-1ms.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.082 [api_error.cc:1779]14598 MemcpyAsync:StreamSynchronize failed, stream_id=27.
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.093 [api_c.cc:1097]14598 rtMemcpyAsync:ErrCode=507011, desc=[the model stream execute failed], InnerCode=0x7150050
+[ERROR] RUNTIME(12059,):2026-09-23-02:51:52.973.096 [error_message_manage.cc:69]14598 FuncErrorReason:rtMemcpyAsync execution failed, reason=the model stream execute failed
+[ERROR] APP(12059,):2026-09-23-02:51:52.973.306 14598 OpParamMaker.cpp:MemcopyAsyncFunc:493: "[PTA]:aclrtMemcpyAsync error! ret = 507011, dstLen = 8, srcLen = 8, kind = 1"
+[ERROR] APP(12059,):2026-09-23-02:51:52.973.317 14598 NPUQueue.cpp:ReadQueue:455: "[PTA]:---Thread---281451085885696: device = 0, write_idx = 2018, read_idx = 2017, status = 1, ret = 507011"
+[ERROR] APP(12059,):2026-09-23-02:51:52.973.745 12059 NPUQueue.cpp:MakeSureQueueEmpty:344: "[PTA]:Inner error happened, detail: the current copy params are srclen=8, dstlen=8, kind=1"
+[ERROR] APP(12059,):2026-09-23-02:51:52.973.756 12059 NPUQueue.cpp:MakeSureQueueEmpty:347: "[PTA]:runtime_error: The Inner error is reported as above. The process exits for this inner error, and the current copy params are srclen=8, dstlen=8, kind=1.
+Since the operator is called asynchronously, the stacktrace may be inaccurate. If you want to get the accurate stacktrace, please set the environment variable ASCEND_LAUNCH_BLOCKING=1.
+Note: ASCEND_LAUNCH_BLOCKING=1 will force ops to run in synchronous mode, resulting in performance degradation. Please unset ASCEND_LAUNCH_BLOCKING in time after debugging.
+[ERROR] 2026-09-23-02:51:52 (PID:12059, Device:0, RankID:-1) ERR00100 PTA call acl api failed.
+[PID: 12059] 2026-09-23-02:15:30.506.869 Invalid_Argument(EH0012): aclrtAllocatorGetByStream failed. Parameter stream is invalid. Reason: The stream is not registered with any allocator.
+TraceBack (most recent call last):
+        The error from device(chipId:0, dieId:0), serial number is 1, there is an exception of f
