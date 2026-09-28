@@ -1,39 +1,12 @@
-[2026-09-28 09:40:11 DP12 TP12 EP12] [DSPARK-TIER] bs=5 global_num_reqs=7 budget=18 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP12 TP12 EP12] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP15 TP15 EP15] [DSPARK-TIER] bs=5 global_num_reqs=7 budget=25 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP9 TP9 EP9] [DSPARK-TIER] bs=5 global_num_reqs=7 budget=6 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP15 TP15 EP15] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP9 TP9 EP9] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP6 TP6 EP6] [DSPARK-TIER] bs=6 global_num_reqs=7 budget=17 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP6 TP6 EP6] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP5 TP5 EP5] [DSPARK-TIER] bs=3 global_num_reqs=7 budget=8 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP4 TP4 EP4] [DSPARK-TIER] bs=6 global_num_reqs=7 budget=17 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP5 TP5 EP5] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP4 TP4 EP4] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP14 TP14 EP14] [DSPARK-TIER] bs=6 global_num_reqs=7 budget=5 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP14 TP14 EP14] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP0 TP0 EP0] [DSPARK-TIER] bs=4 global_num_reqs=7 budget=7 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP11 TP11 EP11] [DSPARK-TIER] bs=6 global_num_reqs=7 budget=30 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP10 TP10 EP10] [DSPARK-TIER] bs=5 global_num_reqs=7 budget=25 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP0 TP0 EP0] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP1 TP1 EP1] [DSPARK-TIER] bs=5 global_num_reqs=7 budget=6 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP11 TP11 EP11] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP10 TP10 EP10] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP1 TP1 EP1] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11] kill_process_tree called: parent_pid=77184, include_parent=False, pid=77184
-[2026-09-28 09:40:11 DP3 TP3 EP3] [DSPARK-TIER] bs=6 global_num_reqs=7 budget=5 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP2 TP2 EP2] [DSPARK-TIER] bs=5 global_num_reqs=7 budget=18 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP3 TP3 EP3] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP2 TP2 EP2] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP7 TP7 EP7] [DSPARK-TIER] bs=7 global_num_reqs=7 budget=16 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP7 TP7 EP7] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP13 TP13 EP13] [DSPARK-TIER] bs=7 global_num_reqs=7 budget=16 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP13 TP13 EP13] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP8 TP8 EP8] [DSPARK-TIER] bs=7 global_num_reqs=7 budget=16 dp_tier_num_tokens=36 tier_num_tokens=36 graph_floor=36 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP8 TP8 EP8] [DSPARK-TIER] graph_num_tokens=48
-[2026-09-28 09:40:11 DP14 TP14 EP14] [DSPARK-TIER] bs=1 global_num_reqs=2 budget=5 dp_tier_num_tokens=11 tier_num_tokens=11 graph_floor=11 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP14 TP14 EP14] [DSPARK-TIER] graph_num_tokens=12
-[2026-09-28 09:40:11 DP9 TP9 EP9] [DSPARK-TIER] bs=2 global_num_reqs=2 budget=9 dp_tier_num_tokens=11 tier_num_tokens=11 graph_floor=11 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP4 TP4 EP4] [DSPARK-TIER] bs=1 global_num_reqs=2 budget=5 dp_tier_num_tokens=11 tier_num_tokens=11 graph_floor=11 capture_grid=[6, 12, 24, 48, 60]
-[2026-09-28 09:40:11 DP9 TP9 EP9] [DSPARK-TIER] graph_num_tokens=12
-[2026-09-28 09:40:11 DP4 TP4 EP4] [DSPARK-TIER] graph_num_tokens=12
+print(
+    f"[NPU-REPLAY] "
+    f"graph_key={graph_key}, "
+    f"raw_bs={self.raw_bs}, "
+    f"bs={self.bs}, "
+    f"raw_num_token={self.raw_num_token}, "
+    f"captured_req_width={self.captured_req_width}, "
+    f"fb_bs={forward_batch.batch_size}, "
+    f"out_cache_loc_shape="
+    f"{None if forward_batch.out_cache_loc is None else tuple(forward_batch.out_cache_loc.shape)}",
+    flush=True,
+)
