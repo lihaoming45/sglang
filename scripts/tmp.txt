@@ -1,0 +1,22 @@
+print(f"[NPU Graph Debug] before capture sync, shape_key={shape_key}", flush=True)
+torch.npu.synchronize()
+print(f"[NPU Graph Debug] before capture sync done, shape_key={shape_key}", flush=True)
+
+graph = torch.npu.NPUGraph()
+
+...
+
+with (
+    skip_guard_context,
+    graph_ctx(
+        graph,
+        pool=self._pool,
+        stream=self._capture_stream,
+        auto_dispatch_capture=True,
+    ),
+):
+    out = forward_fn()
+
+print(f"[NPU Graph Debug] after capture sync, shape_key={shape_key}", flush=True)
+torch.npu.synchronize()
+print(f"[NPU Graph Debug] after capture sync done, shape_key={shape_key}", flush=True)
