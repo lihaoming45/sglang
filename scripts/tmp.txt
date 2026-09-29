@@ -1,14 +1,41 @@
-# Compact ragged verify: input_ids is padded to graph_num_tokens, but
-# num_token_non_padded must describe only the real verify tokens.
-if self.ragged_verify_layout is not None and not batch.forward_mode.is_idle():
-    layout = self.ragged_verify_layout
+if expert_location_dispatch_info is not None:
+    topk_ids = topk_ids_logical_to_physical(
+        topk_ids, expert_location_dispatch_info
+    )
 
-    if layout.verify_lens_cpu is not None:
-        real_num_tokens = int(sum(layout.verify_lens_cpu))
-    else:
-        real_num_tokens = int(layout.verify_lens.sum().item())
+# NPU compact graph padding:
+# rows >= num_token_non_padded are graph padding / ghost tokens.
+# Do not let them enter DeepEP dispatch.
+if num_token_non_padded is not None:
+    row_idx = torch.arange(
+        topk_ids.shape[0],
+        device=topk_ids.device,
+        dtype=torch.int32,
+    )
 
-    verify_forward_batch.global_num_token_non_padded_cpu = real_num_tokens
+    valid_rows = (
+        row_idx < num_token_non_padded[0]
+    ).unsqueeze(-1)
 
-    if verify_forward_batch.global_num_token_non_padded is not None:
-        verify_forward_batch.global_num_token_non_padded.fill_(real_num_tokens)
+    topk_ids = torch.where(
+        valid_rows,
+        topk_ids,
+        torch.full_like(topk_ids, -1),
+    )
+
+    topk_weights = torch.where(
+        valid_rows,
+        topk_weights,
+        torch.zeros_like(topk_weights),
+    )
+
+get_global_expert_distribution_recorder().on_select_experts(
+    topk_ids=topk_ids
+)
+capture_routed_experts_if_allowed(
+    topk_config, layer_id, topk_ids
+)
+
+return StandardTopKOutput(
+    topk_weights, topk_ids, router_logits
+)
