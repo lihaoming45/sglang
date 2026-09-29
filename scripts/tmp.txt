@@ -1,41 +1,95 @@
-if expert_location_dispatch_info is not None:
-    topk_ids = topk_ids_logical_to_physical(
-        topk_ids, expert_location_dispatch_info
-    )
-
-# NPU compact graph padding:
-# rows >= num_token_non_padded are graph padding / ghost tokens.
-# Do not let them enter DeepEP dispatch.
-if num_token_non_padded is not None:
-    row_idx = torch.arange(
-        topk_ids.shape[0],
-        device=topk_ids.device,
-        dtype=torch.int32,
-    )
-
-    valid_rows = (
-        row_idx < num_token_non_padded[0]
-    ).unsqueeze(-1)
-
-    topk_ids = torch.where(
-        valid_rows,
-        topk_ids,
-        torch.full_like(topk_ids, -1),
-    )
-
-    topk_weights = torch.where(
-        valid_rows,
-        topk_weights,
-        torch.zeros_like(topk_weights),
-    )
-
-get_global_expert_distribution_recorder().on_select_experts(
-    topk_ids=topk_ids
-)
-capture_routed_experts_if_allowed(
-    topk_config, layer_id, topk_ids
-)
-
-return StandardTopKOutput(
-    topk_weights, topk_ids, router_logits
-)
+[2026-09-29 07:51:54 DP7 TP7 EP7] Scheduler hit an exception: Traceback (most recent call last):
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 6127, in run_scheduler_process
+    scheduler.run_event_loop()
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 1916, in run_event_loop
+    dispatch_event_loop(self)
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 5939, in dispatch_event_loop
+    return _dispatch_event_loop_once(scheduler)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 5953, in _dispatch_event_loop_once
+    scheduler.event_loop_overlap()
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 2014, in event_loop_overlap
+    batch_result = self.run_batch(batch)
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/observability/scheduler_stage_metrics.py", line 155, in wrapper
+    return profiled_func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/utils/nvtx_utils.py", line 109, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 4414, in run_batch
+    batch_result = self.model_worker.forward_batch_generation(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/speculative/dspark_components/dspark_worker_v2.py", line 577, in forward_batch_generation
+    return self._forward_prefill(batch, on_publish, pp_proxy_tensors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/speculative/dspark_components/dspark_worker_v2.py", line 594, in _forward_prefill
+    batch_output = self.target_worker.forward_batch_generation(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/managers/tp_worker.py", line 674, in forward_batch_generation
+    out = self.model_runner.forward(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/model_executor/model_runner.py", line 1750, in forward
+    output = self._forward_raw(
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/model_executor/model_runner.py", line 1937, in _forward_raw
+    ret = self.eager_runner.execute(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/model_executor/runner/eager_runner.py", line 228, in execute
+    return self._execute_extend(forward_batch, pp_proxy_tensors)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/model_executor/runner/eager_runner.py", line 372, in _execute_extend
+    ret = model_runner.model.forward(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/models/deepseek_v4.py", line 5110, in forward
+    hidden_states = self.model.forward(
+                    ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/models/deepseek_v4.py", line 4785, in forward
+    hidden_states, prev_residual, prev_post, prev_comb = layer(
+                                                         ^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/models/deepseek_v4.py", line 3176, in forward
+    hidden_states = self._run_moe_ffn_dp_sync(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/models/deepseek_v4.py", line 3865, in _run_moe_ffn_dp_sync
+    hidden_states = self.mlp(
+                    ^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/models/deepseek_v2.py", line 963, in forward
+    return self.forward_deepep(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/models/deepseek_v2.py", line 1457, in forward_deepep
+    topk_output = self.topk(
+                  ^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/kernels/fused_op.py", line 659, in forward
+    result = method(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/layers/moe/topk.py", line 749, in forward_npu
+    return fused_topk_npu(
+           ^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/hardware_backend/npu/moe/topk.py", line 123, in fused_topk_npu
+    valid_rows = ( row_idx < num_token_non_padded[0]).unsqueeze(-1)
+                             ~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: invalid index of a 0-dim tensor. Use `tensor.item()` in Python or `tensor.item<T>()` in C++ to convert a 0-dim tensor to a number
