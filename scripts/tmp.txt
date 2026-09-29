@@ -1,59 +1,788 @@
-rank = (
-    torch.distributed.get_rank()
-    if torch.distributed.is_initialized()
-    else -1
-)
 
-real_verify_tokens = int(layout.verify_lens.sum().item())
-
-print(
-    f"[COMPACT-COUNT] "
-    f"rank={rank} "
-    f"bs={bs} "
-    f"real={real_verify_tokens} "
-    f"graph={layout.graph_num_tokens} "
-    f"verify_ids={ragged_window.verify_ids.numel()} "
-    f"verify_lens={layout.verify_lens.detach().cpu().tolist()}",
-    flush=True,
-)
-
-
-
-#####################################################################
-
-
-if is_ragged:
-    rank = (
-        torch.distributed.get_rank()
-        if torch.distributed.is_initialized()
-        else -1
-    )
-
-    real_verify_tokens = int(ragged_layout.verify_lens.sum().item())
-
-    fb_global_gpu = (
-        int(forward_batch.global_num_token_non_padded.item())
-        if forward_batch.global_num_token_non_padded is not None
-        else None
-    )
-
-    graph_local = (
-        int(buffers.num_token_non_padded.item())
-        if buffers.num_token_non_padded is not None
-        else None
-    )
-
-    print(
-        f"[GRAPH-COUNT] "
-        f"rank={rank} "
-        f"real={real_verify_tokens} "
-        f"graph={ragged_layout.graph_num_tokens} "
-        f"fb_global_cpu={forward_batch.global_num_token_non_padded_cpu} "
-        f"fb_global_gpu={fb_global_gpu} "
-        f"graph_local={graph_local} "
-        f"raw_num_token={raw_num_token} "
-        f"padded_num_tokens={padded_num_tokens} "
-        f"raw_bs={raw_bs} "
-        f"padded_bs={bs}",
-        flush=True,
-    )
+[COMPACT-COUNT] rank=4 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=7 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=5 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=15 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=10 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=0 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=6 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=3 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=8 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=12 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=2 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=13 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=9 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=1 bs=3 real=11 graph=24 verify_ids=24 verify_lens=[3, 4, 4]
+[COMPACT-COUNT] rank=11 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=14 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[GRAPH-COUNT] rank=5 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=7 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=15 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=6 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=4 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=3 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=10 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=12 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=0 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=8 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=9 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=1 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=13 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=11 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=2 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=14 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[REPLAY-1] rank=7 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=5 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=15 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=7 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=7 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=5 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=15 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=5 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=6 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=15 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=6 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=10 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=6 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=4 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=3 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=10 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=12 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=4 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=9 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=3 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=0 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=10 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=4 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=3 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=12 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=8 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=9 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=0 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=12 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=9 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=0 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=8 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=11 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=8 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=13 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=11 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=1 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=13 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=11 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=13 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=1 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=1 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=2 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=2 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=2 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=14 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=14 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=14 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=6 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=0 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=15 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=14 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=3 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=11 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=12 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=2 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=8 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=7 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=9 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=5 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=10 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=13 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=4 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=1 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=11 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=13 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=11 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=12 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=13 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=15 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=7 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=10 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=12 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=15 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=7 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=10 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=5 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=11 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=13 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=9 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=4 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=5 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=8 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=0 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=9 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=7 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=15 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=12 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=6 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=4 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=10 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=8 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=3 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=0 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=5 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=1 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=6 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=3 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=9 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=1 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=4 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=8 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=0 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=6 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=3 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=1 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=2 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=2 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=2 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=14 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=14 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=14 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=0 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=8 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=10 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=3 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=4 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=15 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=12 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=2 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=1 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=5 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=6 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=14 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=7 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=13 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=9 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=11 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[COMPACT-COUNT] rank=5 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=4 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=7 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=15 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=3 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=10 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=6 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=13 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=0 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=11 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=8 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=12 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=2 bs=3 real=11 graph=24 verify_ids=24 verify_lens=[3, 2, 6]
+[COMPACT-COUNT] rank=1 bs=3 real=11 graph=24 verify_ids=24 verify_lens=[4, 5, 2]
+[COMPACT-COUNT] rank=9 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=14 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[GRAPH-COUNT] rank=7 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=15 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=5 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=13 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=11 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=3 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=6 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=4 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=10 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=12 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=8 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=0 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=2 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=9 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=1 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=14 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[REPLAY-1] rank=7 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=7 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=7 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=15 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=15 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=6 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=13 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=5 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=15 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=11 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=6 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=13 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=10 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=5 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=6 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=11 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=13 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=5 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=12 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=10 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=11 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=3 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=10 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=4 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=12 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=9 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=3 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=0 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=12 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=4 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=3 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=8 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=9 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=0 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=4 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=9 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=0 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=8 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=8 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=1 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=2 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=1 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=2 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=1 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=2 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=14 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=14 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=14 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=6 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=12 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=11 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=2 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=0 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=15 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=3 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=14 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=9 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=8 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=13 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=10 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=7 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=5 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=4 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=1 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=15 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=4 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=15 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=0 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=5 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=13 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=3 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=7 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=4 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=11 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=0 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=5 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=13 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=3 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=2 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=6 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=10 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=7 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=1 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=11 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=12 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=15 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=4 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=6 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=2 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=10 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=5 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=0 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=8 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=1 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=13 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=9 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=12 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=3 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=7 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=11 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=8 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=6 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=9 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=2 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=10 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=1 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=12 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=9 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=8 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=14 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=14 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=14 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=0 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=10 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=8 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=12 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=3 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=4 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=2 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=14 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=1 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=6 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=13 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=9 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=7 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=11 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=5 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=15 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[COMPACT-COUNT] rank=4 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=0 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=3 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=7 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=10 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=5 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=15 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=6 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=8 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=12 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=13 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=11 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=2 bs=3 real=11 graph=24 verify_ids=24 verify_lens=[5, 3, 3]
+[COMPACT-COUNT] rank=1 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=9 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=14 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[GRAPH-COUNT] rank=7 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=0 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=15 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=5 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=3 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=6 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=10 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=13 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=11 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=4 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=8 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=12 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=9 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=2 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=1 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=14 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[REPLAY-1] rank=7 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=7 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=7 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=15 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=6 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=0 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=5 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=11 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=15 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=6 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=0 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=5 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=10 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=13 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=15 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=6 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=11 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=0 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=12 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=5 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=3 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=10 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=13 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=11 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=8 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=10 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=12 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=13 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=3 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=4 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=12 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=8 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=3 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=4 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=8 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=9 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=4 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=9 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=9 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=2 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=1 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=2 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=1 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=2 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=1 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=14 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=14 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=14 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=6 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=12 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=15 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=2 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=0 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=8 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=11 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=14 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=10 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=9 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=3 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=7 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=4 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=5 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=13 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=1 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=12 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=11 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=15 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=12 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=13 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=11 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=7 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=15 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=5 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=10 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=13 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=0 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=6 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=4 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=7 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=3 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=5 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=12 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=10 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=0 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=6 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=11 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=4 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=3 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=15 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=9 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=13 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=1 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=7 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=5 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=10 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=9 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=8 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=0 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=6 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=1 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=4 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=2 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=3 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=8 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=2 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=9 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=1 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=8 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=2 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=14 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=14 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=14 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=12 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=0 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=10 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=8 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=4 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=3 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=2 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=6 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=5 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=1 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=7 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=14 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=9 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=11 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=13 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=15 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[COMPACT-COUNT] rank=4 bs=3 real=11 graph=24 verify_ids=24 verify_lens=[3, 4, 4]
+[COMPACT-COUNT] rank=5 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=0 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=7 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=12 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=3 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=6 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=10 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=15 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=8 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=11 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=13 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=2 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=1 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=9 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=14 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[GRAPH-COUNT] rank=5 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=7 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=12 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=6 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=0 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=15 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=3 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=13 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=11 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=10 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=4 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=8 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=1 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=9 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=2 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=14 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[REPLAY-1] rank=7 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=7 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=7 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=12 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=5 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=15 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=6 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=12 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=3 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=5 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=0 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=13 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=12 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=15 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=11 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=5 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=6 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=3 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=0 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=15 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=10 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=13 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=6 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=3 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=11 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=0 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=13 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=11 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=10 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=4 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=10 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=8 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=4 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=8 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=4 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=8 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=9 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=9 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=1 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=9 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=1 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=1 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=2 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=2 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=2 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=14 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=14 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=14 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=6 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=0 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=12 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=2 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=11 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=15 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=8 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=10 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=9 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=13 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=7 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=5 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=3 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=14 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=4 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=1 AFTER_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=12 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=12 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=15 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=5 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=6 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=10 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=12 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=15 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=7 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=4 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=14 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=13 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=0 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=5 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=11 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=6 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=10 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=1 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=7 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=4 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=8 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=14 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=9 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=13 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=0 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=11 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=15 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=1 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=2 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=8 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=5 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=6 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=9 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=7 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=10 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=2 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=4 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=14 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=13 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=0 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=11 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=1 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=3 BEFORE_SYNC shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=8 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=9 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=3 BEFORE_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=2 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=3 REPLAY_RETURNED shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=0 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=4 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=8 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=1 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=10 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=3 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=2 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=12 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=6 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=5 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=14 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=7 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=9 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=11 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=13 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-4] rank=15 AFTER_SYNC_DONE shape_key=ShapeKey(size=4, stream_idx=None, variant_label=None, attention_variant=None)
+[COMPACT-COUNT] rank=4 bs=3 real=11 graph=24 verify_ids=24 verify_lens=[3, 3, 5]
+[COMPACT-COUNT] rank=7 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=5 bs=3 real=11 graph=24 verify_ids=24 verify_lens=[6, 2, 3]
+[COMPACT-COUNT] rank=0 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=3 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=8 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=6 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=15 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=12 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=10 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=13 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[5, 6]
+[COMPACT-COUNT] rank=1 bs=3 real=18 graph=24 verify_ids=24 verify_lens=[6, 6, 6]
+[COMPACT-COUNT] rank=14 bs=2 real=11 graph=24 verify_ids=24 verify_lens=[6, 5]
+[COMPACT-COUNT] rank=11 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[COMPACT-COUNT] rank=2 bs=3 real=11 graph=24 verify_ids=24 verify_lens=[6, 3, 2]
+[COMPACT-COUNT] rank=9 bs=1 real=6 graph=24 verify_ids=24 verify_lens=[6]
+[GRAPH-COUNT] rank=4 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=5 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=7 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=8 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=0 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=12 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=6 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=15 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=13 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=10 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=14 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=11 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[GRAPH-COUNT] rank=1 real=18 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=2 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=3 padded_bs=10
+[GRAPH-COUNT] rank=3 real=11 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=2 padded_bs=10
+[GRAPH-COUNT] rank=9 real=6 graph=24 fb_global_cpu=24 fb_global_gpu=24 graph_local=24 raw_num_token=24 padded_num_tokens=24 raw_bs=1 padded_bs=10
+[REPLAY-1] rank=7 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=7 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=7 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=5 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=4 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=8 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=12 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=6 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=5 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=4 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=15 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=0 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=8 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=5 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=12 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=4 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=6 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=8 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=15 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=12 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=0 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=13 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=6 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=10 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=14 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=15 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=0 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=13 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=10 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=14 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=13 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=10 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=14 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=9 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=1 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=11 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=9 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=2 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=1 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=11 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=9 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=1 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=11 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=2 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=2 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-1] rank=3 BEFORE_SYNC shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-2] rank=3 BEFORE_SYNC_DONE shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[REPLAY-3] rank=3 REPLAY_RETURNED shape_key=ShapeKey(size=24, stream_idx=None, variant_label=None, attention_variant=None)
+[2026-09-29 06:46:33 DP2 TP2 EP2] Scheduler hit an exception: Traceback (most recent call last):
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 6127, in run_scheduler_process
+    scheduler.run_event_loop()
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 1916, in run_event_loop
+    dispatch_event_loop(self)
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 5939, in dispatch_event_loop
+    return _dispatch_event_loop_once(scheduler)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 5953, in _dispatch_event_loop_once
+    scheduler.event_loop_overlap()
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 2014, in event_loop_overlap
+    batch_result = self.run_batch(batch)
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/observability/scheduler_stage_metrics.py", line 155, in wrapper
+    return profiled_func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/utils/nvtx_utils.py", line 109, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/managers/scheduler.py", line 4414, in run_batch
+    batch_result = self.model_worker.forward_batch_generation(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/speculative/dspark_components/dspark_worker_v2.py", line 579, in forward_batch_generation
+    return self._forward_decode(batch, on_publish, grammar_barrier)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/speculative/dspark_components/dspark_worker_v2.py", line 855, in _forward_decode
+    target_verify, hidden_strided = self._verify_executor.run_compact(
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/speculative/dspark_components/dspark_verify.py", line 480, in run_compact
+    target_verify = self._run_ragged(
+                    ^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/speculative/dspark_components/dspark_verify.py", line 429, in _run_ragged
+    return self._forward_prepared_verify(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/speculative/dspark_components/dspark_verify.py", line 343, in _forward_prepared_verify
+    target_out = self.target_worker.forward_batch_generation(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/managers/tp_worker.py", line 674, in forward_batch_generation
+    out = self.model_runner.forward(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/model_executor/model_runner.py", line 1750, in forward
+    output = self._forward_raw(
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/model_executor/model_runner.py", line 1882, in _forward_raw
+    ret = self.decode_cuda_graph_runner.execute(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/hardware_backend/npu/graph_runner/npu_graph_runner.py", line 439, in execute
+    output = self.backend.replay(graph_key, forward_batch)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/l00993641/sglang/python/sglang/srt/hardware_backend/npu/graph_runner/npu_cudagraph_backend.py", line 199, in replay
+    torch.npu.synchronize()
+  File "/usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/npu/utils.py", line 72, in synchronize
+    return torch_npu._C._npu_synchronize()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: npuSynchronizeDevice:../torch_npu/csrc/core/npu/NPUStream.cpp:714 NPU function error: AclrtSynchronizeDeviceWithTimeout, error code is 507011
+[ERROR] 2026-09-29-06:46:33 (PID:221110, Device:2, RankID:-1) ERR00100 PTA call acl api failed
+[Error]: Model execution failed. 
+        Rectify the fault based on the error information in the ascend log.
+EZ9999: Inner Error!
+EZ9999[PID: 221110] 2026-09-29-06:46:33.727.081 (EZ9999):  The error from device(chipId:1, dieId:0), serial number is 14, there is an exception of fftsplus aivector error, core id is 0, error code = 0x4000000000000000, dump info: pc start: 0x124400d49534, current: 0x124400d9424c, vec error info: 0x500000008a, mte error info: 0x61060000b0, ifu error info: 0x3f94240debd00, ccu error info: 0xeb7aa8592800008a, cube error info: 0, biu error info: 0, aic error mask: 0x6500020bd00028c, para base: 0x12c142647080, aic cond: 0.
+The extend info: errcode:(0x4000000000000000, 0x4000, 0) errorStr: The address for the VEC instruction to read/write UB is out of bounds.The GM address accessed by scalar exceeds 48 bits. fixp_error0 info: 0x60000b0, fixp_error1 info: 0x61, fsmId:0, tslot:5, thread:0, ctxid:0, blk:10, sublk:0, subErrType:4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintCoreInfo][FILE:device_error_core_proc.cc][LINE:1060]
+TraceBack (most recent call last):
+       rtDeviceSynchronizeWithTimeout execution failed, reason=the model stream execute failed[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
