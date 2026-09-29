@@ -1,3 +1,43 @@
-AI总结：compact 在每一轮会动态改变“这一轮真正有哪些 token”；Graph 又希望重放捕获时那一套固定的内存/通信结构；DeepEP low-latency 再拿这些数据做跨卡 MoE dispatch。某一轮，Graph 里的某个地址/offset/metadata 和当前 compact layout 没完全对上，于是 DeepEP dispatch 最后访问到了非法 GM。
+def replay(
+    self,
+    shape_key: ShapeKey,
+    static_forward_batch: ForwardBatch,
+    **kwargs,
+):
+    rank = (
+        torch.distributed.get_rank()
+        if torch.distributed.is_initialized()
+        else -1
+    )
 
-首次报错的kernel name: MoeLowLatencyDispatchV2
+    print(
+        f"[REPLAY-1] rank={rank} BEFORE_SYNC "
+        f"shape_key={shape_key}",
+        flush=True,
+    )
+
+    torch.npu.synchronize()
+
+    print(
+        f"[REPLAY-2] rank={rank} BEFORE_SYNC_DONE "
+        f"shape_key={shape_key}",
+        flush=True,
+    )
+
+    self._graphs[shape_key].replay()
+
+    print(
+        f"[REPLAY-3] rank={rank} REPLAY_RETURNED "
+        f"shape_key={shape_key}",
+        flush=True,
+    )
+
+    torch.npu.synchronize()
+
+    print(
+        f"[REPLAY-4] rank={rank} AFTER_SYNC_DONE "
+        f"shape_key={shape_key}",
+        flush=True,
+    )
+
+    return self._outputs[shape_key]
