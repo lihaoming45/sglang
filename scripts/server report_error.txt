@@ -1,72 +1,247 @@
-#### /home/l00993641/sglang/python/sglang/srt/models/deepseek_v2.py
-topk_kwargs = (
-    {"input_ids": input_ids_global}
-    if getattr(self, "is_hash", False)
-    else {}
-)
+"""NPUCudaGraphBackend — Ascend NPU full-graph capture (torch.npu.NPUGraph).
 
-# Diagnostic A/B:
-# Only mask graph-padding rows for NPU target verification.
-# Do NOT affect the DSpark draft graph.
-if _is_npu and not getattr(self, "is_hash", False):
-    topk_kwargs["mask_graph_padding"] = (
-        forward_batch.forward_mode.is_target_verify()
+Mirrors FullCudaGraphBackend with two differences:
+  - Captures via torch.npu.graph(...) into torch.npu.NPUGraph.
+  - replay_with_input_update(shape_key, seq_lens, attr_name) rebinds
+    the recorded graph's input bindings for variable seq_lens at replay
+    time (NPU's NPUGraph.update(...) API).
+
+torch.npu is imported lazily inside methods so the module loads on
+non-NPU hosts.
+"""
+
+from __future__ import annotations
+
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import AbstractContextManager, contextmanager
+from functools import partial
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional
+
+import numpy as np
+import torch
+
+from sglang.srt.constants import GPU_MEMORY_TYPE_CUDA_GRAPH
+from sglang.srt.distributed.device_communicators.pynccl_allocator import (
+    set_graph_pool_id,
+)
+from sglang.srt.model_executor.runner.shape_key import ShapeKey
+from sglang.srt.model_executor.runner_backend.base_cuda_graph_backend import (
+    BaseCudaGraphBackend,
+)
+from sglang.srt.utils import empty_context, get_bool_env_var
+from sglang.srt.utils.torch_memory_saver_adapter import TorchMemorySaverAdapter
+
+if TYPE_CHECKING:
+    from sglang.srt.model_executor.forward_batch_info import ForwardBatch
+    from sglang.srt.model_executor.runner.base_cuda_graph_runner import (
+        BaseCudaGraphRunner,
     )
 
-topk_output = self.topk(
-    hidden_states,
-    router_logits,
-    num_token_non_padded=forward_batch.num_token_non_padded,
-    expert_location_dispatch_info=(
-        ExpertLocationDispatchInfo.init_new(
-            layer_id=self.layer_id,
+
+class NPUCudaGraphBackend(BaseCudaGraphBackend):
+    """One torch.npu.NPUGraph per shape; attention metadata captured
+    inside the graph. replay_with_input_update substitutes fresh
+    seq_lens without re-recording."""
+
+    def __init__(
+        self,
+        cuda_graph_runner: BaseCudaGraphRunner,
+        *,
+        enable_memory_saver: bool = False,
+    ) -> None:
+        self._graphs: Dict[Any, Any] = {}
+        self._outputs: Dict[Any, Any] = {}
+        self._pool = None
+        self._device_module = cuda_graph_runner.device_module
+        self._device_id = self._device_module.current_device()
+        self._tp_group = cuda_graph_runner.model_runner.tp_group
+        self._capture_stream = None
+        self._memory_saver_adapter: Optional[Any] = TorchMemorySaverAdapter.create(
+            enable=enable_memory_saver
+            and get_bool_env_var("SGLANG_MEMORY_SAVER_CUDA_GRAPH")
         )
-        if not self.is_nextn
-        else None
-    ),
-    **topk_kwargs,
-)
+        self._enable_torch_compile = getattr(
+            cuda_graph_runner, "enable_torch_compile", False
+        )
+        # Reuse one device-bound worker for graph input updates.
+        self._update_executor = ThreadPoolExecutor(
+            max_workers=1,
+            thread_name_prefix="npu-graph-update",
+            initializer=self._device_module.set_device,
+            initargs=(self._device_id,),
+        )
 
+    @contextmanager
+    def capture_session(self, stream):
+        if self._pool is None:
+            self._pool = self._device_module.graph_pool_handle()
+        set_graph_pool_id(self._pool)
+        self._capture_stream = stream
+        try:
+            yield
+        finally:
+            self._capture_stream = None
 
-### /home/l00993641/sglang/python/sglang/srt/layers/moe/topk.py
-def forward_npu(
-    self,
-    hidden_states: torch.Tensor,
-    router_logits: torch.Tensor,
-    *,
-    num_token_non_padded: Optional[torch.Tensor] = None,
-    expert_location_dispatch_info: Optional[ExpertLocationDispatchInfo] = None,
-    dynamic_expert_bias: Optional[torch.Tensor] = None,
-    mask_graph_padding: bool = False,
-) -> TopKOutput:
+    def capture_one(
+        self,
+        shape_key: ShapeKey,
+        forward_fn: Callable[[], Any],
+        capture_inputs: Optional[Any] = None,
+        post_warmup_hook: Optional[Callable[[], None]] = None,
+    ) -> None:
+        import torch_npu  # noqa: F401  (verifies NPU availability)
 
+        # Two warmups so kernels are loaded and one-time setup is paid before capture.
+        # post_warmup_hook lets the attention backend reset state that warmup mutated.
+        for _ in range(2):
+            self._device_module.synchronize()
+            self._tp_group.barrier()
+            forward_fn()
+            if post_warmup_hook is not None:
+                post_warmup_hook()
 
+        # self._device_module.synchronize()
+        # self._tp_group.barrier()
 
-return fused_topk_npu(
-    hidden_states=hidden_states,
-    router_logits=router_logits,
-    topk_config=self.topk_config,
-    num_token_non_padded=num_token_non_padded,
-    expert_location_dispatch_info=expert_location_dispatch_info,
-    layer_id=self.layer_id,
-    mask_graph_padding=mask_graph_padding,
-)
+        # print(f"[NPU Graph Debug] after capture sync, shape_key={shape_key}", flush=True)
+        # torch.npu.synchronize()
+        # print(f"[NPU Graph Debug] after capture sync done, shape_key={shape_key}", flush=True)
 
+        graph = torch.npu.NPUGraph()
 
+        if self._enable_torch_compile:
+            skip_guard_context = torch.compiler.set_stance(skip_guard_eval_unsafe=True)
+        else:
+            skip_guard_context = empty_context()
 
-### /home/l00993641/sglang/python/sglang/srt/hardware_backend/npu/moe/topk.py
+        graph_ctx: Callable[..., AbstractContextManager]
+        if (
+            self._memory_saver_adapter is not None
+            and self._memory_saver_adapter.enabled
+        ):
+            graph_ctx = partial(
+                self._memory_saver_adapter.cuda_graph,
+                tag=GPU_MEMORY_TYPE_CUDA_GRAPH,
+            )
+        else:
+            graph_ctx = torch.npu.graph
 
-def fused_topk_npu(
-    hidden_states: torch.Tensor,
-    router_logits: torch.Tensor,
-    topk_config: "TopKConfig",
-    num_token_non_padded: Optional[torch.Tensor] = None,
-    expert_location_dispatch_info: Optional["ExpertLocationDispatchInfo"] = None,
-    layer_id: Optional[int] = None,
-    mask_graph_padding: bool = False,
-) -> "TopKOutput":
+        with (
+            skip_guard_context,
+            graph_ctx(
+                graph,
+                pool=self._pool,
+                stream=self._capture_stream,
+                auto_dispatch_capture=True,
+            ),
+        ):
+            out = forward_fn()
 
+        # print(f"[NPU Graph Debug] after capture sync, shape_key={shape_key}", flush=True)
+        # torch.npu.synchronize()
+        # print(f"[NPU Graph Debug] after capture sync done, shape_key={shape_key}", flush=True)
 
+        self._graphs[shape_key] = graph
+        self._outputs[shape_key] = out
 
-if mask_graph_padding and num_token_non_padded is not None:
+    def can_run(self, forward_batch: ForwardBatch, shape_key: ShapeKey) -> bool:
+        return shape_key in self._graphs
 
+    @contextmanager
+    def replay_session(self):
+        yield
+
+    # def replay(
+    #     self,
+    #     shape_key: ShapeKey,
+    #     static_forward_batch: ForwardBatch,
+    #     **kwargs,
+    # ) -> Any:
+    #     self._graphs[shape_key].replay()
+    #     return self._outputs[shape_key]
+
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>> l00993641 临时测试<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+    def replay(
+            self,
+            shape_key: ShapeKey,
+            static_forward_batch: ForwardBatch,
+            **kwargs,
+    ):
+        rank = (
+            torch.distributed.get_rank()
+            if torch.distributed.is_initialized()
+            else -1
+        )
+
+        print(
+            f"[REPLAY-1] rank={rank} BEFORE_SYNC "
+            f"shape_key={shape_key}",
+            flush=True,
+        )
+
+        torch.npu.synchronize()
+
+        print(
+            f"[REPLAY-2] rank={rank} BEFORE_SYNC_DONE "
+            f"shape_key={shape_key}",
+            flush=True,
+        )
+
+        self._graphs[shape_key].replay()
+
+        print(
+            f"[REPLAY-3] rank={rank} REPLAY_RETURNED "
+            f"shape_key={shape_key}",
+            flush=True,
+        )
+
+        torch.npu.synchronize()
+
+        print(
+            f"[REPLAY-4] rank={rank} AFTER_SYNC_DONE "
+            f"shape_key={shape_key}",
+            flush=True,
+        )
+
+        return self._outputs[shape_key]
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>> l00993641 临时测试<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+    def replay_with_input_update(
+        self,
+        shape_key: ShapeKey,
+        seq_lens: Any,
+        attr_name: str = None,
+        attr_type: Any = None,
+        cpu_update_input: list = None,
+    ) -> Any:
+        """Rebind seq_lens on the recorded NPU graph, then replay.
+
+        NPUGraph.update must complete before replay can consume the updated
+        KV lengths. Used when the model is not deepseek-nsa.
+
+        Two calling conventions:
+        1. (legacy) seq_lens + attr_name + attr_type:
+           Constructs cpu_update_input=[{attr_name: seq_lens}] internally.
+        2. cpu_update_input: A list of {attr_name: seq_lens} dicts,
+           one per speculative step.  Used by EAGLE draft runners.
+        """
+        if cpu_update_input is None:
+            if isinstance(attr_type, torch.Tensor):
+                seq_lens = torch.from_numpy(np.array(seq_lens).astype(np.int32))
+            cpu_update_input = [{attr_name: seq_lens}]
+
+        graph = self._graphs[shape_key]
+
+        update_future = self._update_executor.submit(
+            graph.update, cpu_update_input=cpu_update_input
+        )
+        update_future.result()
+        graph.replay()
+        return self._outputs[shape_key]
+
+    def cleanup(self) -> None:
+        self._update_executor.shutdown(wait=True, cancel_futures=True)
+        self._graphs.clear()
+        self._outputs.clear()
+        self._pool = None
