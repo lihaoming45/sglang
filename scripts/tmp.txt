@@ -1,9 +1,192 @@
-       _npu_deepep_graph_debug(
-            self, "dispatch-in", hidden_states, topk_ids, topk_weights
+from __future__ import annotations
+
+import inspect
+import logging
+import os
+from contextlib import nullcontext
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, List, NamedTuple, Optional, Tuple, Union
+
+from sglang.srt.environ import envs
+from sglang.srt.eplb.expert_distribution import get_global_expert_distribution_recorder
+from sglang.srt.layers import deep_gemm_wrapper
+from sglang.srt.layers.dp_attention import get_is_extend_in_batch
+from sglang.srt.layers.moe.token_dispatcher.base import (
+    BaseDispatcher,
+    BaseDispatcherConfig,
+    CombineInput,
+    CombineInputFormat,
+    DispatcherBaseHooks,
+    DispatchOutput,
+    DispatchOutputFormat,
+)
+from sglang.srt.layers.moe.topk import TopKOutput
+from sglang.srt.layers.moe.utils import (
+    DeepEPMode,
+    DispatcherOutputDtype,
+    get_deepep_config,
+    get_deepep_output_dtype,
+    is_tbo_enabled,
+)
+from sglang.srt.runtime_context import get_parallel
+from sglang.srt.utils import (
+    get_bool_env_var,
+    get_cuda_version,
+    is_blackwell,
+    is_flashinfer_available,
+    is_hip,
+    is_npu,
+    load_json_config,
+)
+
+_is_npu = is_npu()
+_use_zbal = _is_npu and envs.SGLANG_ZBAL_LOCAL_MEM_SIZE.get() > 0
+
+if TYPE_CHECKING:
+    from sglang.srt.batch_overlap.single_batch_overlap import CombineOverlapArgs
+
+try:
+    if _use_zbal:
+        from zbal.zbal.deepep_adaptor import Config
+        from zbal.zbal_buffer import Buffer
+    else:
+        from deep_ep import Buffer, Config
+
+    if not _is_npu:
+        from sglang.kernels.ops.quantization.fp8_kernel import (
+            sglang_per_token_group_quant_fp8,
         )
 
+    use_deepep = True
+except ImportError:
+    use_deepep = False
+
+from enum import Enum, IntEnum, auto
+
+import torch
+import torch.distributed as dist
+
+from sglang.srt.runtime_context import get_resources
+
+_use_aiter = get_bool_env_var("SGLANG_USE_AITER") and is_hip()
+
+logger = logging.getLogger(__name__)
 
 
-      _npu_deepep_graph_debug(
-            self, "dispatch-out", self.packed_recv_count, self.handle
-        )
+# Temporary NPU graph diagnostics; both switches default to off.
+_NPU_DEEPEP_TRACE = os.environ.get("SGLANG_NPU_DEEPEP_TRACE", "0") == "1"
+_NPU_DEEPEP_KEEPALIVE = (
+    os.environ.get("SGLANG_NPU_DEEPEP_KEEPALIVE", "0") == "1"
+)
+
+
+def _npu_deepep_graph_debug(owner, tag, *items):
+    if not _is_npu or not (_NPU_DEEPEP_TRACE or _NPU_DEEPEP_KEEPALIVE):
+        return
+    capturing = torch.npu.is_current_stream_capturing()
+    if tag == "dispatch-in":
+        x, ids, weights = items
+        if x.ndim != 2 or ids.ndim != 2 or weights.ndim != 2:
+            raise RuntimeError("[DEEPEP-META] dispatch expects rank-2 tensors")
+        if x.shape[0] != ids.shape[0] or ids.shape != weights.shape:
+            raise RuntimeError(
+                f"[DEEPEP-META] shape mismatch: "
+                f"x={tuple(x.shape)} ids={tuple(ids.shape)} "
+                f"weights={tuple(weights.shape)}"
+            )
+        if ids.dtype != torch.int64:
+            raise RuntimeError(f"[DEEPEP-META] ids dtype={ids.dtype}, expected int64")
+        if x.shape[0] > owner.num_max_dispatch_tokens_per_rank:
+            raise RuntimeError(
+                f"[DEEPEP-META] rows={x.shape[0]} exceed "
+                f"capacity={owner.num_max_dispatch_tokens_per_rank}"
+            )
+        # Host-side metadata only. No .item(), .cpu(), or synchronization in capture.
+        if _NPU_DEEPEP_TRACE and capturing and x.shape[0] == 24:
+            rank = dist.get_rank() if dist.is_initialized() else -1
+            print(
+                f"[DEEPEP-CAPTURE-META] rank={rank} owner={hex(id(owner))} "
+                f"x={tuple(x.shape)}/{x.dtype}/{tuple(x.stride())}@{hex(x.data_ptr())} "
+                f"ids={tuple(ids.shape)}/{ids.dtype}/{tuple(ids.stride())}@{hex(ids.data_ptr())} "
+                f"weights={tuple(weights.shape)}/{weights.dtype}/"
+                f"{tuple(weights.stride())}@{hex(weights.data_ptr())} "
+                f"capacity={owner.num_max_dispatch_tokens_per_rank} "
+                f"experts={owner.num_experts} keepalive={int(_NPU_DEEPEP_KEEPALIVE)}",
+                flush=True,
+            )
+    if not (_NPU_DEEPEP_KEEPALIVE and capturing):
+        return
+    refs = getattr(owner, "_npu_deepep_graph_debug_refs", None)
+    if refs is None:
+        refs = owner._npu_deepep_graph_debug_refs = {}
+
+    def retain(value):
+        if isinstance(value, torch.Tensor):
+            # Retain route inputs and small handle metadata, not large recv buffers.
+            # This is a bounded-per-tensor lifetime experiment, not a workspace fix.
+            if value.numel() * value.element_size() <= 1024 * 1024:
+                refs[id(value)] = value
+        elif isinstance(value, (tuple, list)):
+            for child in value:
+                retain(child)
+        elif isinstance(value, dict):
+            for child in value.values():
+                retain(child)
+
+    for item in items:
+        retain(item)
+
+
+_NVSHMEM_QP_DEPTH_DEFAULT = 1024
+
+
+def _set_nvshmem_qp_depth(num_max_dispatch_tokens_per_rank: int) -> None:
+    min_qp_depth = 2 * (num_max_dispatch_tokens_per_rank + 1)
+    current_qp_depth = int(
+        os.environ.get("NVSHMEM_QP_DEPTH", _NVSHMEM_QP_DEPTH_DEFAULT)
+    )
+    os.environ["NVSHMEM_QP_DEPTH"] = str(
+        max(current_qp_depth, _NVSHMEM_QP_DEPTH_DEFAULT, min_qp_depth)
+    )
+
+
+def _is_mnnvl_fabric_supported() -> bool:
+    if not is_flashinfer_available():
+        return False
+
+    from flashinfer.comm.mnnvl import is_mnnvl_fabric_supported
+
+    return is_mnnvl_fabric_supported(torch.cuda.current_device())
+
+
+def _deepep_precompile_tp_barrier() -> None:
+    # DeepEP's all-to-all operation has a much shorter timeout compared to torch.distributed,
+    # so if different ranks compile at different speeds, it may quickly trigger a timeout.
+    # To avoid this, we use torch.distributed's barrier during the compile stage.
+    # We apply this barrier only in the compile stage to prevent extra all-reduce overhead at runtime.
+    if envs.SGLANG_IN_DEEPGEMM_PRECOMPILE_STAGE.get():
+        get_parallel().tp_group.barrier()
+
+
+class DeepEPPDispatchHooks(DispatcherBaseHooks):
+    def __call__(self, dispatcher: BaseDispatcher):
+        for hook_fun in self.hook_dict.values():
+            hook_fun(dispatcher)
+
+
+class DeepEPNormalDispatchOutput(NamedTuple):
+    """DeepEP normal dispatch output."""
+
+    hidden_states: torch.Tensor
+    hidden_states_scale: Optional[torch.Tensor]
+    topk_ids: torch.Tensor
+    topk_weights: torch.Tensor
+    num_recv_tokens_per_expert: List[int]
+
+    @property
+    def format(self) -> DispatchOutputFormat:
+        return DispatchOutputFormat.DEEPEP_NORMAL
+
+
+class DeepEPLLDispatchOutput(NamedTuple):
+    """DeepEP low latency dispatch output."""
