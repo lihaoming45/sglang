@@ -1,0 +1,125 @@
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.784.396 [stars_engine.cc:1557]118850 ProcLogicCqReport:Task run failed, device_id=0, stream_id=43, task_id=51810, sqe_type=7(notify wait), errType=0x20(sq sw status error), sqSwStatus=0x1040008b
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.043 [device_error_core_proc.cc:1020]118850 AddExceptionRegInfo:add error register: core_id=2, stream_id=91, task_id=139
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.054 [device_error_core_proc.cc:1060]118850 PrintCoreInfo:The error from device(chipId:0, dieId:0), serial number is 9, there is an exception of fftsplus aivector error, core id is 2, error code = 0x4000000000000000, dump info: pc start: 0x124000d49534, current: 0x124000d9424c, vec error info: 0x500000008a, mte error info: 0x61060000b0, ifu error info: 0x22a00400008c0, ccu error info: 0xc49c67ab2800008a, cube error info: 0, biu error info: 0, aic error mask: 0x6500020bd00028c, para base: 0x12c1425e2080, aic cond: 0.
+The extend info: errcode:(0x4000000000000000, 0x4000, 0) errorStr: The address for the VEC instruction to read/write UB is out of bounds.The GM address accessed by scalar exceeds 48 bits. fixp_error0 info: 0x60000b0, fixp_error1 info: 0x61, fsmId:0, tslot:1, thread:0, ctxid:0, blk:10, sublk:1, subErrType:4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.085 [device_error_core_proc.cc:1397]118850 ProcessStarsCoreErrorInfo:devId=0, streamId=91, taskId=139, MTE errorCode=0.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.096 [model_execute_task.cc:544]118850 ReportErrorInfoForModelExecuteTask:model execute error, retCode=0x91, [the model stream execute failed].
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.116 [model_execute_task.cc:509]118850 PrintErrorInfoForModelExecuteTask:stream_id=43, task_id=51809, sqVirtualAddr=0, head equal tail flag=0.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.119 [model_execute_task.cc:472]118850 PrintErrorModelExecuteTaskFuncCall:funcCallSvmMem=0x1240013a9000, funCallMemSize=464.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.137 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00000113 000000db 092010db 013a91c0 0000025b 0000125b 00000001 000002db
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.139 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 000012db 00000006 00329073 004177e3 00311193 00308233 00023183 0000025b
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.141 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 1003125b a0004880 000000db 000090db 00000001 0000b073 00322027 0000025b
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.143 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 1003125b a0004880 00023203 000000db 000090db 00000001 0000a073 00020093
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.145 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 7ff0f093 0030c0b3 000002db 000012db 00000000 00329073 226087fb 02025213
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.147 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00f27213 000000db 000010db 00000000 00309073 226207fb 000000db 000010db
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.149 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00000006 00309073 00021763 00319293 0000025b 0960125b 80000000 00520233
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.151 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00023203 000002db 000012db 00000006 00329073 00020263 01023083 01f09093
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.153 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 03f0d093 000002db 000012db 00000005 00329073 000081e3 01023283 03029293
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.155 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 0302d293 00823083 03009093 0300d093 0050c0b3 000002db 000012db 00000006
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.157 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00329073 000094e3 00022a27 0001c22b 00311293 00110113 0000025b 0920125b
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.158 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 013a91c8 005202b3 0002b203 00023283 00128293 00521027 0001d2ab 0000025b
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.160 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 0000125b 00000000 00321073 000000e3 000002db 096012db 80013000 0042a027
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.162 [model_execute_task.cc:489]118850 PrintErrorModelExecuteTaskFuncCall:FuncCall data : 00000000 000002db 096012db 80013000 0012a427 00000000 00000000 00000013
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.165 [model_execute_task.cc:517]118850 PrintErrorInfoForModelExecuteTask:model execute task failed, device_id=0, model stream_id=43, model task_id=51809, flip_num=0, model_id=47, first_task_id=0
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.169 [model_execute_task.cc:560]118850 ReportErrorInfoForModelExecuteTask:Real fault task, device_id=0, sub_model_id=4294967295, stream_id=91, task_id=139, type=0[KERNEL_AICORE].
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.198 [davinci_kernel_task.cc:1076]118850 GetArgsInfo:[AIC_INFO] args(0 to 17) after execute:0xfee00000000, 0x131ac25e1a00, 0x12d435224000, 0x12d435424000, 0x12da9e0c8000, 0x12c1c0340400, 0x12c1c0341600, 0x131ac005ca00, 0x131ac005b800, 0x12e4401ad000, 0x12e440000a00, 0x12e4401af000, 0x12e4401aee00, 0x131ac005dc00, 0x12da9e0c8000, 0x132c0058c000, 0x12e4400530a0, 0x12c100fe2000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.202 [davinci_kernel_task.cc:1080]118850 GetArgsInfo:tilingKey = 0, print 1 Times totalLen=(18*8), argsSize=144, schemMode=0, blockDim=24
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.208 [davinci_kernel_task.cc:1180]118850 PrintErrorInfoForDavinciTask:[AIC_INFO] after execute:args print end
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.222 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[0]=0x00000006.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.224 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[1]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.226 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[2]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.228 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[3]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.230 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[4]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.231 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[5]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.233 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[6]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.234 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[7]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.236 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[8]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.238 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[9]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.240 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[10]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.241 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[11]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.243 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[12]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.245 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[13]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.246 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[14]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.248 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[15]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.250 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[16]=0x00000880.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.251 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[17]=0x02020004.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.253 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[18]=0x00010000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.255 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[19]=0x00180018.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.257 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[20]=0x425e2080.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.258 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[21]=0x009012c1.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.260 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[22]=0x425e2080.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.261 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[23]=0x009012c1.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.263 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[24]=0x00d1f22c.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.265 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[25]=0x12401240.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.267 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[26]=0x00d1f22c.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.268 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[27]=0x00d49534.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.270 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[28]=0x12401240.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.271 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[29]=0x00d49534.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.273 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[30]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.275 [davinci_kernel_task.cc:1040]118850 GetMixCtxInfo:The DavinciTask Mix context-buf[31]=0000000000.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.277 [davinci_kernel_task.cc:1185]118850 PrintErrorInfoForDavinciTask:[AIC_INFO] after execute:mixCtx print end
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.788.692 [davinci_kernel_task.cc:1210]118850 PrintErrorInfoForDavinciTask:[DFX_INFO]AI Core kernel execution failed, device_id=0, stream_id=91, report_stream_id=43, task_id=139, flip_num=0, fault kernel_name=compressor_0, fault kernel info ext=none, program id=2, hash=15224504303271086636.
+[ERROR] IDEDD(116494,):2026-09-30-06:04:52.788.744 [exception_dumper.cpp:203][tid:118850] [Dump][Exception] Begin to dump exception. dumpScene=aic_err_brief_dump, deviceId=0, streamId=91, taskId=139, exceptionType=2(aicore), kernelName=compressor_0.
+[ERROR] IDEDD(116494,):2026-09-30-06:04:52.789.142 [kernel_symbol_locator.cpp:583][tid:118850] [Dump][Exception] Error register information. coreId=2, coreType=1, AIC_ERR_0=0x0 AIC_ERR_1=0x40000000 AIC_ERR_2=0x4000 AIC_ERR_3=0x0 AIC_ERR_4=0x0 AIC_ERR_5=0x0 BIU_ERR_0=0x0 BIU_ERR_1=0x0 CCU_ERR_0=0x2800008a CCU_ERR_1=0xc49c67ab CUBE_ERR_0=0x0 CUBE_ERR_1=0x0 IFU_ERR_0=0x400008c0 IFU_ERR_1=0x22a00 MTE_ERR_0=0x60000b0 MTE_ERR_1=0x61 VEC_ERR_0=0x8a VEC_ERR_1=0x50 FIXP_ERR_0=0x60000b0 FIXP_ERR_1=0x61 AIC_COND_0=0x0 AIC_COND_1=0x0 
+[ERROR] IDEDD(116494,):2026-09-30-06:04:52.789.146 [kernel_pc_fixer.cpp:97][tid:118850] [Dump][Exception] Fix PC with module=VEC, originalPC=0x124000d9424c, fixedPC=0x124000d94228.
+[ERROR] IDEDD(116494,):2026-09-30-06:04:52.789.148 [kernel_pc_fixer.cpp:97][tid:118850] [Dump][Exception] Fix PC with module=CCU, originalPC=0x124000d9424c, fixedPC=0x124000d94228.
+[ERROR] IDEDD(116494,):2026-09-30-06:04:52.789.150 [kernel_symbol_locator.cpp:602][tid:118850] [Dump][Exception] Error PC information. coreId=2, coreType=1, originalStartPC=0x124000d49534, fixedStartPC=0x124000cf9000, originalCurrentPC=0x124000d9424c, fixedCurrentPC=0x124000d94228, fixedPCOffset=0x9b228.
+[ERROR] IDEDD(116494,):2026-09-30-06:04:52.789.152 [kernel_symbol_locator.cpp:608][tid:118850] [Dump][Exception] Error symbol information. coreId=2, coreType=1, symbol=compressor_0_mix_aiv+0x4acf4.
+[ERROR] IDEDD(116494,):2026-09-30-06:04:52.789.161 [dump_args.cpp:129][tid:118850] No exception dfx info, dfxAddr[(nil)]|dfxSize[0].
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.791.249 [stream.cc:1743]118850 GetError:Stream Synchronize failed, stream_id=43, retCode=0x91, [the model stream execute failed].
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.791.254 [stream.cc:1746]118850 GetError:[AIC_INFO] after execute:args print end
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.791.276 [stream.cc:1746]118850 GetError:[AIC_INFO] after execute:mixCtx print end
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.791.282 [stream.cc:1746]118850 GetError:[DFX_INFO]AI Core kernel execution failed, device_id=0, stream_id=91, report_stream_id=43, task_id=139, flip_num=0, fault kernel_name=compressor_0, fault kernel info ext=none, program id=2, hash=15224504303271086636.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.791.289 [stream.cc:4183]118850 EnterFailureAbort:stream_id=43 enter failure abort.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.791.297 [context.cc:620]116494 SyncStreamsWithTimeout:Failed to synchronize stream, stream_id=43, retCode=0x7150050.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.791.304 [api_error.cc:2816]116494 DeviceSynchronize:Device synchronize failed.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.791.307 [stars_engine.cc:1447]118850 StarsResumeRtsq:Failed to resume RTSQ. Reason: stop scheduling in abort failure mode, stream_id=43, sq_id=6, sq_head=610, task_id=51810, taskType=14.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.791.313 [api_c_device.cc:236]116494 rtDeviceSynchronizeWithTimeout:ErrCode=507011, desc=[the model stream execute failed], InnerCode=0x7150050
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:52.791.317 [error_message_manage.cc:69]116494 FuncErrorReason:rtDeviceSynchronizeWithTimeout execution failed, reason=the model stream execute failed
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.067.298 [context.cc:763]116494 Synchronize:context is abort, status=0x7150050.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.067.313 [api_error.cc:2816]116494 DeviceSynchronize:Device synchronize failed.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.067.333 [api_c_device.cc:236]116494 rtDeviceSynchronizeWithTimeout:ErrCode=507011, desc=[the model stream execute failed], InnerCode=0x7150050
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.067.338 [error_message_manage.cc:69]116494 FuncErrorReason:rtDeviceSynchronizeWithTimeout execution failed, reason=the model stream execute failed
+[ERROR] APP(116494,):2026-09-30-06:04:54.067.780 116494 InitNpuBindings.cpp:THPModule_npu_shutdown_synchronize:126: "[PTA]:NPU shutdown synchronize device failed."
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.068.178 [api_impl.cc:1654]116494 StreamSynchronize:context is abort, status=0x7150050.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.068.184 [api_error.cc:1101]116494 StreamSynchronize:Stream synchronize failed, stream_id=34, timeout=-1ms.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.068.189 [api_c_stream.cc:180]116494 rtStreamSynchronizeWithTimeout:ErrCode=507011, desc=[the model stream execute failed], InnerCode=0x7150050
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.068.193 [error_message_manage.cc:69]116494 FuncErrorReason:rtStreamSynchronizeWithTimeout execution failed, reason=the model stream execute failed
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.070.833 [api_impl.cc:1654]116494 StreamSynchronize:context is abort, status=0x7150050.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.070.840 [api_error.cc:1101]116494 StreamSynchronize:Stream synchronize failed, stream_id=38, timeout=-1ms.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.070.847 [api_c_stream.cc:180]116494 rtStreamSynchronizeWithTimeout:ErrCode=507011, desc=[the model stream execute failed], InnerCode=0x7150050
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.070.850 [error_message_manage.cc:69]116494 FuncErrorReason:rtStreamSynchronizeWithTimeout execution failed, reason=the model stream execute failed
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.072.829 [api_impl.cc:2150]116494 EventQueryStatus:context is abort, status=0x7150050.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.072.840 [api_c.cc:794]116494 rtEventQueryStatus:ErrCode=507011, desc=[the model stream execute failed], InnerCode=0x7150050
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.072.844 [error_message_manage.cc:69]116494 FuncErrorReason:rtEventQueryStatus execution failed, reason=the model stream execute failed
+[ERROR] APP(116494,):2026-09-30-06:04:54.073.639 116494 CachingHostAllocator.cpp:query_event:341: "[PTA]:query_event() failed, runtime error: query:../torch_npu/csrc/core/npu/NPUEvent.cpp:95 NPU function error: acl::AclQueryEventRecordedStatus(event_, &currStatus), error code is 507011
+[ERROR] 2026-09-30-06:04:54 (PID:116494, Device:0, RankID:-1) ERR00100 PTA call acl api failed
+[Error]: Model execution failed. 
+        Rectify the fault based on the error information in the ascend log.
+EE9999: Inner Error!
+EE9999[PID: 116494] 2026-09-30-06:04:54.072.849 (EE9999):  rtEventQueryStatus execution failed, reason=the model stream execute failed[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+TraceBack (most recent call last):
+
+Exception raised from query at ../torch_npu/csrc/core/npu/NPUEvent.cpp:95 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0xc8 (0xfffdf7c45978 in /usr/local/python3.12
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.073.892 [context.cc:763]116494 Synchronize:context is abort, status=0x7150050.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.073.897 [api_error.cc:2816]116494 DeviceSynchronize:Device synchronize failed.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.073.902 [api_c_device.cc:236]116494 rtDeviceSynchronizeWithTimeout:ErrCode=507011, desc=[the model stream execute failed], InnerCode=0x7150050
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.073.905 [error_message_manage.cc:69]116494 FuncErrorReason:rtDeviceSynchronizeWithTimeout execution failed, reason=the model stream execute failed
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.074.364 [context.cc:763]116494 Synchronize:context is abort, status=0x7150050.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.074.369 [api_error.cc:2816]116494 DeviceSynchronize:Device synchronize failed.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.074.373 [api_c_device.cc:236]116494 rtDeviceSynchronizeWithTimeout:ErrCode=507011, desc=[the model stream execute failed], InnerCode=0x7150050
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.074.376 [error_message_manage.cc:69]116494 FuncErrorReason:rtDeviceSynchronizeWithTimeout execution failed, reason=the model stream execute failed
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.117.606 [context.cc:763]116494 Synchronize:context is abort, status=0x7150050.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.117.612 [api_error.cc:2816]116494 DeviceSynchronize:Device synchronize failed.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.117.617 [api_c_device.cc:236]116494 rtDeviceSynchronizeWithTimeout:ErrCode=507011, desc=[the model stream execute failed], InnerCode=0x7150050
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.117.620 [error_message_manage.cc:69]116494 FuncErrorReason:rtDeviceSynchronizeWithTimeout execution failed, reason=the model stream execute failed
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.128.260 [context.cc:763]116494 Synchronize:context is abort, status=0x7150050.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.128.265 [api_error.cc:2816]116494 DeviceSynchronize:Device synchronize failed.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.128.270 [api_c_device.cc:236]116494 rtDeviceSynchronizeWithTimeout:ErrCode=507011, desc=[the model stream execute failed], InnerCode=0x7150050
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.128.272 [error_message_manage.cc:69]116494 FuncErrorReason:rtDeviceSynchronizeWithTimeout execution failed, reason=the model stream execute failed
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.136.645 [context.cc:763]116494 Synchronize:context is abort, status=0x7150050.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.136.651 [api_error.cc:2816]116494 DeviceSynchronize:Device synchronize failed.
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.136.657 [api_c_device.cc:236]116494 rtDeviceSynchronizeWithTimeout:ErrCode=507011, desc=[the model stream execute failed], InnerCode=0x7150050
+[ERROR] RUNTIME(116494,):2026-09-30-06:04:54.136.660 [error_message_manage.cc:69]116494 FuncErrorReason:rtDeviceSynchronizeWithTimeout execution failed, reason=the model stream execute failed
