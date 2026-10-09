@@ -37,8 +37,8 @@ export SGLANG_OPT_USE_TILELANG_MHC_POST=False
 
 # mtp
 export SGLANG_ENABLE_SPEC_V2=1
-export SGLANG_ENABLE_OVERLAP_PLAN_STREAM=1
-
+export SGLANG_ENABLE_OVERLAP_PLAN_STREAM=0
+#export ASCEND_LAUNCH_BLOCKING=1
 # path
 #export PYTHONPATH=/home/z50065439/sglang-main/sglang/python:$PYTHONPATH
 export PYTHONPATH=/home/l00993641/sglang/python:$PYTHONPATH
@@ -67,6 +67,7 @@ export SGLANG_DSPARK_DEBUG_DUMP=core,reqs
 
 
 export DEEPEP_HYBRID_DEPLOYMENT=1
+
 
 # 不确定是否有影响
 #export SGLANG_DEFAULT_THINKING=1
@@ -107,6 +108,7 @@ python3 -m sglang.launch_server \
     --cuda-graph-bs-decode 1 2 4 8 10 \
 
 
+#     --disable-cuda-graph \
 #    --speculative-algorithm EAGLE \
 #    --speculative-num-steps 2 \
 #    --speculative-eagle-topk 1 \

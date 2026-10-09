@@ -20,8 +20,7 @@ evalscope eval \
         "stream": true,
         "extra_body": {
             "chat_template_kwargs": {
-                "thinking": true,
-                "reasoning_effort": "max"
+                "thinking": true
             }
         }
     }' \
@@ -32,12 +31,11 @@ evalscope eval \
             "local_path": "/home/datasets/gpqa_diamond"
         }
     }' \
-    --eval-batch-size 32 \
-    --ignore-error \
+    --eval-batch-size 128 \
+    --ignore-error
 
 
-
-#
+#  "reasoning_effort": "max"
 #unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy
 #unset ALL_PROXY all_proxy
 #

@@ -53,7 +53,7 @@ export SGLANG_FORCE_COARSE_WAR_BARRIER=1
 export DEEPEP_HCCL_BUFFSIZE=2500
 export SGLANG_DEEPEP_NUM_MAX_DISPATCH_TOKENS_PER_RANK=60
 
-export SGLANG_RAGGED_VERIFY_MODE=compact # static, CAP_ACCEPT, compact
+export SGLANG_RAGGED_VERIFY_MODE=static # static, CAP_ACCEPT, compact
 export SGLANG_DSPARK_FAST_KERNEL=0
 #export SGLANG_NPU_USE_MULTI_STREAM=1
 
@@ -99,11 +99,10 @@ python3 -m sglang.launch_server \
     --speculative-draft-attention-backend ascend \
     --speculative-num-draft-tokens 6 \
     --speculative-dspark-block-size 5 \
-    --speculative-dspark-sps-table-path /home/l00993641/sglang/scripts/dspark_sps.json \
-    --cuda-graph-bs 1 2 4 8 10
+    --cuda-graph-bs 1 2 4 8 10 \
 
 
-
+#    --speculative-dspark-sps-table-path /home/l00993641/sglang/scripts/dspark_sps.json \
 #    --speculative-algorithm EAGLE \
 #    --speculative-num-steps 2 \
 #    --speculative-eagle-topk 1 \
