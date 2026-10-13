@@ -1,0 +1,13 @@
+readlink /proc/self/ns/pid
+
+
+
+for name in sgl-dspark-test sgl-dspark-lhm; do
+    pid=$(docker inspect -f '{{.State.Pid}}' "$name" 2>/dev/null)
+    if [ -n "$pid" ] && [ "$pid" != "0" ]; then
+        echo "$name: $(readlink /proc/$pid/ns/pid)"
+    fi
+done
+
+
+
