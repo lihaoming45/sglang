@@ -237,6 +237,10 @@ def maybe_build_dsv4_verify_bundle(
     current draft interval from the per-request DSV4 tables instead of reusing
     the larger allocation bundle produced during decode preparation.
     """
+
+    """
+    准备本轮验证所需的 DSV4 压缩缓存写入信息。
+    """
     pool = batch.req_to_token_pool
     if not hasattr(pool, "req_to_c128_sidecar"):
         return None
