@@ -134,7 +134,10 @@ def _select_block(
         # bits_f32 = bits_hi * 65536.0 + bits_lo
         # uniform = (bits_f32 + 0.5) * _UNIFORM_SCALE
 
-        bits = bits.to(tl.int64) & 0xFFFFFFFF
+        """
+        CUDA 的底层转换指令明确区分有符号与无符号整数，因此能够按 uint32 → float32 的含义处理。
+        """
+        bits = bits.to(tl.int64) & 0xFFFFFFFF # 随机数本来是正数，当前的 Triton-Ascend 环境在转换时，把其中一部分当成了负数。加这一行，就是把它恢复成原本的正数。
         uniform = (bits.to(tl.float32) + 0.5) * _UNIFORM_SCALE
         # uniform = (bits.to(tl.float32) + 0.5) * _UNIFORM_SCALE
         exp_noise = -libdevice.log1p(-uniform)
