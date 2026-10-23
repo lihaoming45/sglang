@@ -11,7 +11,7 @@ evalscope eval \
     --api-key EMPTY \
     --eval-type openai_api \
     --generation-config '{
-        "max_tokens": 2000,
+        "max_tokens": 10000,
         "seed": 3407,
         "top_p": 1.0,
         "temperature": 1.0,
@@ -29,6 +29,6 @@ evalscope eval \
     --dataset-hub local \
     --dataset-args '{
         "aime26": { "local_path": "/home/datasets/aime26_large"}}' \
-    --eval-batch-size 96 \
-    --limit 96 \
+    --eval-batch-size 16 \
+    --limit 16 \
     --ignore-error
