@@ -43,7 +43,7 @@ export SGLANG_ENABLE_OVERLAP_PLAN_STREAM=0
 #export PYTHONPATH=/home/z50065439/sglang-main/sglang/python:$PYTHONPATH
 export PYTHONPATH=/home/l00993641/sglang/python:$PYTHONPATH
 
-MODEL_PATH=/home/weights/DeepSeek-V4-Flash-0731-w8a8
+MODEL_PATH=/home/weights/DeepSeek-V4-Flash-0731-w8a8  #A5
 
 export DEEP_NORMAL_MODE_USE_INT8_QUANT=1
 
