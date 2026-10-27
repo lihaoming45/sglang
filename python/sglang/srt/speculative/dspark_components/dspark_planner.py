@@ -376,9 +376,7 @@ class DSparkVerifyPlanner:
 
         # No collective: the budget derives only from the broadcast draft tokens
         # (via confidence), replicated req_generation, and the static sps table.
-        """
-        #00993641 compute_budget_sync在这里会使用confidence还有sps_table来筛选token，并留出预算
-        """
+
         draft_input.verify_token_budget = self.compute_budget_sync(
             confidence=confidence,
             prefix_lens=prefix_lens,
@@ -409,7 +407,7 @@ class DSparkVerifyPlanner:
                 generation=resolved.generation,
                 current_generation=current_generation,
                 req_pool_indices_cpu=req_pool_indices_cpu,
-            ) #00993641 使用condience和sps， 通过compute_verify_token_budget比较不同预算的效率。SPS table可以理解为不同图大概有多快的成本表。
+            )
         )
 
     def schedule_layout(

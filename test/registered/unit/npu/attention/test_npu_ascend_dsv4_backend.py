@@ -56,6 +56,17 @@ _eagle_stub.per_step_draft_out_cache_loc = _per_step_draft_out_cache_loc
 sys.modules.setdefault("sglang.srt.speculative", ModuleType("sglang.srt.speculative"))
 sys.modules.setdefault("sglang.srt.speculative.eagle_utils", _eagle_stub)
 
+def _resolve_ragged_verify_layout(forward_batch):
+    spec_info = getattr(forward_batch, "spec_info", None)
+    if spec_info is None:
+        return None
+    return spec_info.ragged_verify_layout
+
+
+sys.modules[
+    "sglang.srt.speculative.ragged_verify"
+].resolve_ragged_verify_layout.side_effect = _resolve_ragged_verify_layout
+
 from sglang.srt.hardware_backend.npu.attention.ascend_dsv4_backend import (
     C4IndexerAscendBackendMixin,
     CompressorAscendBackendMixin,
@@ -584,10 +595,11 @@ class TestCompressorStateTableABI(unittest.TestCase):
     )
     def test_arch35_graph_capture_allocates_cycle_table_buffer(self, _):
         backend = DeepseekV4AscendAttnBackend.__new__(DeepseekV4AscendAttnBackend)
-        metadata = SimpleNamespace()
         backend.device = "cpu"
+        backend.is_hybrid_swa = False
+
         backend.graph_metadata = {
-            2: metadata,
+            "block_tables": torch.full((2, 4), -1, dtype=torch.int32),
             "swa_page_table": torch.full((2, 4), -1, dtype=torch.int32),
             "c4_page_table": torch.full((2, 4), -1, dtype=torch.int32),
             "c128_page_table": torch.full((2, 4), -1, dtype=torch.int32),
@@ -605,9 +617,15 @@ class TestCompressorStateTableABI(unittest.TestCase):
         forward_mode = MagicMock()
         forward_mode.is_target_verify.return_value = False
         forward_mode.is_draft_extend_v2.return_value = False
+        forward_batch = SimpleNamespace(batch_size=2, forward_mode=forward_mode)
 
-        backend._init_dsv4_graph_metadata(2, forward_mode)
 
+
+        backend._init_dsv4_graph_metadata(
+            metadata_key=2, forward_batch=forward_batch, ragged_layout=None
+        )
+
+        metadata = backend.graph_metadata[2]
         table = getattr(metadata, "dsv4_cycle_state_block_table", None)
         self.assertIsNotNone(table)
         self.assertEqual(tuple(table.shape), (2,))
