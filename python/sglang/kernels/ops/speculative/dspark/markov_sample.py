@@ -129,10 +129,6 @@ def _select_block(
         bits = tl.interleave(tl.interleave(w0, w2), tl.interleave(w1, w3))
         # Small words convert to FP32 exactly, so the winning small noise stays precise.
 
-        # bits_hi = (bits >> 16).to(tl.int32).to(tl.float32)
-        # bits_lo = (bits & 0xFFFF).to(tl.int32).to(tl.float32)
-        # bits_f32 = bits_hi * 65536.0 + bits_lo
-        # uniform = (bits_f32 + 0.5) * _UNIFORM_SCALE
 
         bits = bits.to(tl.int64) & 0xFFFFFFFF
         uniform = (bits.to(tl.float32) + 0.5) * _UNIFORM_SCALE

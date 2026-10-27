@@ -283,3 +283,6 @@ artifacts/
 
 # Internal, non-published docs
 internal-docs/
+
+# JiuwenSwarm runtime file operation logs
+.agent_history/

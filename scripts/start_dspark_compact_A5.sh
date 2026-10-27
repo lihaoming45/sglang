@@ -69,7 +69,7 @@ export SGLANG_DEEPEP_NUM_MAX_DISPATCH_TOKENS_PER_RANK=256
 
 
 # Dspark
-export SGLANG_RAGGED_VERIFY_MODE=compact #static
+export SGLANG_RAGGED_VERIFY_MODE=static #static
 export SGLANG_DSPARK_FAST_KERNEL=0
 #export SGLANG_DSPARK_FAST_SAMPLING=0
 export SGLANG_DSPARK_A5_EXTRA_OPS_SO=/usr/local/Ascend/extra-ops/vllm_ascend_C.cpython-312-aarch64-linux-gnu.so
@@ -79,7 +79,7 @@ export LD_LIBRARY_PATH=/usr/local/Ascend/extra-ops/vendors/custom_transformer/op
 python3 -m sglang.launch_server --model-path ${MODEL_PATH} \
     --max-total-tokens 65536 \
     --page-size 128 \
-    --tp-size 4 \
+    --tp-size 8 \
     --trust-remote-code \
     --attention-backend dsv4 \
     --device npu \
@@ -92,7 +92,7 @@ python3 -m sglang.launch_server --model-path ${MODEL_PATH} \
     --cuda-graph-bs-decode 1 2 4 8 10 \
     --kv-cache-dtype auto \
     --enable-dp-lm-head \
-    --enable-dp-attention --dp-size 4  \
+    --enable-dp-attention --dp-size 8  \
     --reasoning-parser deepseek-v4 \
     --speculative-algorithm DSPARK \
     --speculative-draft-model-path ${MODEL_PATH} \
@@ -101,12 +101,12 @@ python3 -m sglang.launch_server --model-path ${MODEL_PATH} \
     --speculative-num-draft-tokens 6 \
     --speculative-dspark-block-size 5 \
     --speculative-dspark-sps-table-path /home/l00993641/sglang/scripts/dspark_graph_additive.json \
-    --enable-hierarchical-cache \
-    --hicache-io-backend kernel_ascend \
-    --enable-cache-report \
-    --hicache-ratio 2 \
-    --hicache-write-policy write_through \
-    --hicache-storage-backend npu_memcache \
-    --hicache-storage-backend-extra-config '{"meta_service_url":"tcp://127.0.0.1:5006", "config_store_url":"tcp://127.0.0.1:6006", "log_level":"info", "world_size":4, "protocol": "device_urma", "dram_size": "30GB"}' \
+#    --hicache-io-backend kernel_ascend \
+#    --enable-cache-report \
+#    --enable-hierarchical-cache \
+#    --hicache-ratio 2 \
+#    --hicache-write-policy write_through \
+#    --hicache-storage-backend npu_memcache \
+#    --hicache-storage-backend-extra-config '{"meta_service_url":"tcp://127.0.0.1:5006", "config_store_url":"tcp://127.0.0.1:6006", "log_level":"info", "world_size":4, "protocol": "device_urma", "dram_size": "30GB"}' \
 
-    2>&1 | tee sglang_server__$(date +%Y%m%d_%H%M%S).log
+#    2>&1 | tee sglang_server__$(date +%Y%m%d_%H%M%S).log

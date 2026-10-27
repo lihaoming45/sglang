@@ -7,7 +7,7 @@ export PYTHONPATH=/home/l00993641/sglang/python:$PYTHONPATH
 
 evalscope eval \
     --model /home/weights/DeepSeek-V4-Flash-0731-w8a8 \
-    --api-url http://127.0.0.1:30100/v1 \
+    --api-url http://127.0.0.1:8001/v1 \
     --api-key EMPTY \
     --eval-type openai_api \
     --generation-config '{
