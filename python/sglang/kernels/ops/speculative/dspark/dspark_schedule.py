@@ -25,8 +25,6 @@ class ScheduleVerifyLensTopk:
         # rank) is not legalizable by the triton-ascend TTIR->Linalg pass
         # (ascend has no global sort; the O(n^2)-rank scheme relies on
         # patterns the backend cannot lower). CUDA keeps the fused kernel.
-        if is_npu_arch35():
-            return cls.torch(*args, **kwargs)
         if inputs_on_cuda(*args, **kwargs):
             return cls.triton(*args, **kwargs)
         return cls.torch(*args, **kwargs)
